@@ -124,6 +124,7 @@
           <div class="mode-tabs" role="tablist">
             <button class="mode-tab active" type="button" data-mode="quick" role="tab" aria-selected="true">Quick calculator</button>
             <button class="mode-tab" type="button" data-mode="detailed" role="tab" aria-selected="false">Semester planner</button>
+            <button class="mode-tab" type="button" data-mode="analytics" role="tab" aria-selected="false">Risk Radar &amp; Charts 📊</button>
           </div>
           <div class="calculator-card quick-panel" id="quick-panel">
             <div class="calc-header">
@@ -185,6 +186,50 @@
               <button class="button primary calculate" type="submit">Build my attendance plan <span>→</span></button>
             </form>
             <div class="result" id="result" hidden aria-live="polite"></div>
+          </div>
+
+          <div class="calculator-card analytics-panel" id="analytics-panel" hidden>
+            <div class="calc-header">
+              <div><h3>Visual Risk Radar &amp; Health Spectrum</h3><p>Live graphical breakdown of your attendance cushion across all subjects.</p></div>
+              <span class="calc-badge">◉ Real-Time Charts</span>
+            </div>
+
+            <div class="radar-summary-grid">
+              <div class="circular-gauge-box">
+                <div class="circular-gauge">
+                  <svg viewBox="0 0 100 100">
+                    <circle class="gauge-bg" cx="50" cy="50" r="40"></circle>
+                    <circle class="gauge-fill" id="radar-gauge-circle" cx="50" cy="50" r="40" stroke-dasharray="251.2" stroke-dashoffset="50"></circle>
+                  </svg>
+                  <div class="gauge-center">
+                    <b id="radar-overall-pct">84%</b>
+                    <span>Aggregate</span>
+                  </div>
+                </div>
+              </div>
+              <div class="radar-stats-list">
+                <div class="radar-stat-tile safe">
+                  <b id="radar-safe-count">0</b>
+                  <span>Safe (&gt;=75%)</span>
+                </div>
+                <div class="radar-stat-tile warn">
+                  <b id="radar-warn-count">0</b>
+                  <span>Warning (65-74%)</span>
+                </div>
+                <div class="radar-stat-tile danger">
+                  <b id="radar-danger-count">0</b>
+                  <span>Critical (&lt;65%)</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="spectrum-chart-container">
+              <div class="spectrum-header">
+                <span>SUBJECT ATTENDANCE SPECTRUM</span>
+                <span>TARGET: 75%</span>
+              </div>
+              <div id="spectrum-bars-list"></div>
+            </div>
           </div>
         </div>
       </section>

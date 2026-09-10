@@ -81,12 +81,205 @@
   font-size: 11px;
 }
 
-.tool-section {
-  max-width: 1184px;
-  margin: 0 auto;
-  padding: 85px 28px;
-  border-top: 1px solid var(--line);
+/* Visual Analytics & Attendance Risk Radar */
+.analytics-card {
+  background: #ffffff;
+  border: 1px solid var(--line);
+  box-shadow: 0 15px 35px rgba(36, 42, 76, 0.05);
+  border-radius: 14px;
+  padding: 26px;
 }
+
+.radar-summary-grid {
+  display: grid;
+  grid-template-columns: 180px 1fr;
+  gap: 24px;
+  align-items: center;
+  margin-bottom: 24px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--line);
+}
+
+.circular-gauge-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.circular-gauge {
+  position: relative;
+  width: 130px;
+  height: 130px;
+}
+
+.circular-gauge svg {
+  transform: rotate(-90deg);
+  width: 130px;
+  height: 130px;
+}
+
+.gauge-bg {
+  fill: none;
+  stroke: #ebeef7;
+  stroke-width: 10;
+}
+
+.gauge-fill {
+  fill: none;
+  stroke: #43b786;
+  stroke-width: 10;
+  stroke-linecap: round;
+  transition: stroke-dashoffset 0.8s ease;
+}
+
+.gauge-center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+}
+
+.gauge-center b {
+  display: block;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 26px;
+  font-weight: 800;
+  color: var(--ink);
+  line-height: 1;
+}
+
+.gauge-center span {
+  font-size: 10px;
+  color: var(--muted);
+  font-weight: 600;
+}
+
+.radar-stats-list {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+.radar-stat-tile {
+  background: #f8f9fd;
+  border: 1px solid #eaedf6;
+  border-radius: 8px;
+  padding: 12px 10px;
+  text-align: center;
+}
+
+.radar-stat-tile b {
+  display: block;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 20px;
+  line-height: 1.1;
+  color: var(--ink);
+}
+
+.radar-stat-tile span {
+  font-size: 10px;
+  color: var(--muted);
+}
+
+.radar-stat-tile.safe b { color: #277c57; }
+.radar-stat-tile.warn b { color: #b8791d; }
+.radar-stat-tile.danger b { color: #c64e4b; }
+
+/* Subject Spectrum Bars */
+.spectrum-chart-container {
+  margin-top: 16px;
+}
+
+.spectrum-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--muted);
+  margin-bottom: 12px;
+}
+
+.spectrum-row {
+  margin-bottom: 14px;
+}
+
+.spectrum-row-label {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  margin-bottom: 5px;
+}
+
+.spectrum-row-label b {
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.spectrum-row-label span {
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.spectrum-bar-track {
+  height: 10px;
+  background: #edf0f7;
+  border-radius: 6px;
+  position: relative;
+  overflow: visible;
+}
+
+.spectrum-target-line {
+  position: absolute;
+  top: -4px;
+  bottom: -4px;
+  width: 2px;
+  background: #202758;
+  z-index: 2;
+  border-radius: 1px;
+}
+
+.spectrum-target-line::after {
+  content: '75%';
+  position: absolute;
+  top: -16px;
+  left: -10px;
+  font-size: 9px;
+  font-weight: 700;
+  color: var(--ink);
+  opacity: 0.7;
+}
+
+.spectrum-bar-fill {
+  height: 100%;
+  border-radius: 6px;
+  transition: width 0.6s ease;
+}
+
+.spectrum-bar-fill.safe {
+  background: linear-gradient(90deg, #5267ee, #43b786);
+}
+
+.spectrum-bar-fill.warn {
+  background: linear-gradient(90deg, #f0b543, #e5922a);
+}
+
+.spectrum-bar-fill.danger {
+  background: linear-gradient(90deg, #ea635a, #c64e4b);
+}
+
+@media (max-width: 600px) {
+  .radar-summary-grid {
+    grid-template-columns: 1fr;
+    text-align: center;
+  }
+  .radar-stats-list {
+    grid-template-columns: 1fr;
+  }
+}
+
 
 .tool-section-grid {
   display: grid;

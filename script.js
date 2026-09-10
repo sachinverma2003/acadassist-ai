@@ -125,15 +125,105 @@ selectedHolidays.addEventListener('click', event => {
 
 // Mode switch tabs for Attendance
 document.querySelectorAll('[data-mode]').forEach(button => button.addEventListener('click', () => {
-  const isQuick = button.dataset.mode === 'quick';
-  document.querySelector('#quick-panel').hidden = !isQuick;
-  document.querySelector('#detailed-panel').hidden = isQuick;
+  const mode = button.dataset.mode;
+  document.querySelector('#quick-panel').hidden = mode !== 'quick';
+  document.querySelector('#detailed-panel').hidden = mode !== 'detailed';
+  const analyticsPanel = document.querySelector('#analytics-panel');
+  if (analyticsPanel) analyticsPanel.hidden = mode !== 'analytics';
+  if (mode === 'analytics') renderAttendanceRiskRadar();
+
   document.querySelectorAll('[data-mode]').forEach(tab => {
     const active = tab === button;
     tab.classList.toggle('active', active);
     tab.setAttribute('aria-selected', active);
   });
 }));
+
+function renderAttendanceRiskRadar() {
+  const rows = [...document.querySelectorAll('.subject-row')];
+  const listEl = document.querySelector('#spectrum-bars-list');
+  const safeCountEl = document.querySelector('#radar-safe-count');
+  const warnCountEl = document.querySelector('#radar-warn-count');
+  const dangerCountEl = document.querySelector('#radar-danger-count');
+  const overallPctEl = document.querySelector('#radar-overall-pct');
+  const gaugeCircle = document.querySelector('#radar-gauge-circle');
+
+  if (!listEl) return;
+
+  const subjects = rows.map(r => ({
+    name: r.querySelector('.subject-name').value.trim() || 'Untitled Subject',
+    held: parseInt(r.querySelector('.classes-held').value, 10) || 0,
+    attended: parseInt(r.querySelector('.classes-attended').value, 10) || 0
+  }));
+
+  if (!subjects.length) {
+    listEl.innerHTML = '<small style="color:var(--muted)">No subjects entered in attendance planner yet.</small>';
+    return;
+  }
+
+  let totalHeld = 0;
+  let totalAttended = 0;
+  let safeCount = 0;
+  let warnCount = 0;
+  let dangerCount = 0;
+
+  const barsMarkup = subjects.map(s => {
+    totalHeld += s.held;
+    totalAttended += s.attended;
+
+    const pct = s.held > 0 ? (s.attended / s.held) * 100 : 0;
+    let status = 'safe';
+    let tip = '';
+
+    if (pct >= 75) {
+      safeCount++;
+      status = 'safe';
+      const canMiss = Math.floor(s.attended / 0.75 - s.held);
+      tip = canMiss > 0 ? `Can miss ${canMiss} class${canMiss === 1 ? '' : 'es'}` : 'On the threshold';
+    } else if (pct >= 65) {
+      warnCount++;
+      status = 'warn';
+      const needed = Math.ceil((0.75 * s.held - s.attended) / 0.25);
+      tip = `Need next ${needed} class${needed === 1 ? '' : 'es'}`;
+    } else {
+      dangerCount++;
+      status = 'danger';
+      const needed = Math.ceil((0.75 * s.held - s.attended) / 0.25);
+      tip = `Critical: Need next ${needed} classes`;
+    }
+
+    return `
+      <div class="spectrum-row">
+        <div class="spectrum-row-label">
+          <b>${escapeHtml(s.name)} <small style="font-weight:normal; color:var(--muted)">(${s.attended}/${s.held})</small></b>
+          <span style="color: ${status === 'safe' ? '#277c57' : status === 'warn' ? '#b8791d' : '#c64e4b'}">
+            ${pct.toFixed(1)}% &bull; <small>${tip}</small>
+          </span>
+        </div>
+        <div class="spectrum-bar-track">
+          <div class="spectrum-target-line" style="left: 75%;"></div>
+          <div class="spectrum-bar-fill ${status}" style="width: ${Math.min(100, Math.max(4, pct))}%;"></div>
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  listEl.innerHTML = barsMarkup;
+  if (safeCountEl) safeCountEl.textContent = safeCount;
+  if (warnCountEl) warnCountEl.textContent = warnCount;
+  if (dangerCountEl) dangerCountEl.textContent = dangerCount;
+
+  const overallPct = totalHeld > 0 ? (totalAttended / totalHeld) * 100 : 0;
+  if (overallPctEl) overallPctEl.textContent = `${overallPct.toFixed(0)}%`;
+
+  if (gaugeCircle) {
+    const circ = 251.2;
+    const offset = circ - (circ * (overallPct / 100));
+    gaugeCircle.style.strokeDashoffset = offset;
+    gaugeCircle.style.stroke = overallPct >= 75 ? '#43b786' : overallPct >= 65 ? '#e5922a' : '#c64e4b';
+  }
+}
+
 
 // Helper Functions for Dates & Holidays
 function localDate(value) { return new Date(`${value}T00:00:00`); }
