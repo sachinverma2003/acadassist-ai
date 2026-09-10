@@ -1,5 +1,5 @@
-/* sw.js - Service Worker for AcadAssist.ai Offline Support */
-const CACHE_NAME = 'acadassist-v2-cache';
+/* sw.js - Service Worker for AcadAssist.ai Offline Support (Network-First Strategy) */
+const CACHE_NAME = 'acadassist-v7-stable';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
@@ -13,10 +13,11 @@ const ASSETS_TO_CACHE = [
 ];
 
 self.addEventListener('install', event => {
+  self.skipWaiting();
   event.waitUntil(
     caches.open(CACHE_NAME).then(cache => {
       return cache.addAll(ASSETS_TO_CACHE);
-    }).then(() => self.skipWaiting())
+    })
   );
 });
 
@@ -24,36 +25,39 @@ self.addEventListener('activate', event => {
   event.waitUntil(
     caches.keys().then(keys => {
       return Promise.all(
-        keys.filter(key => key !== CACHE_NAME).map(key => caches.delete(key))
+        keys.map(key => {
+          if (key !== CACHE_NAME) {
+            console.log('Clearing old cache:', key);
+            return caches.delete(key);
+          }
+        })
       );
     }).then(() => self.clients.claim())
   );
 });
 
+// Network-First with Cache Fallback for seamless live updates
 self.addEventListener('fetch', event => {
-  // Only handle GET requests
   if (event.request.method !== 'GET') return;
 
   event.respondWith(
-    caches.match(event.request).then(cachedResponse => {
-      if (cachedResponse) {
-        return cachedResponse;
-      }
-      return fetch(event.request).then(networkResponse => {
-        if (!networkResponse || networkResponse.status !== 200 || networkResponse.type !== 'basic') {
-          return networkResponse;
+    fetch(event.request)
+      .then(networkResponse => {
+        if (networkResponse && networkResponse.status === 200) {
+          const responseToCache = networkResponse.clone();
+          caches.open(CACHE_NAME).then(cache => {
+            cache.put(event.request, responseToCache);
+          });
         }
-        const responseToCache = networkResponse.clone();
-        caches.open(CACHE_NAME).then(cache => {
-          cache.put(event.request, responseToCache);
-        });
         return networkResponse;
-      }).catch(() => {
-        // Offline fallback for html
-        if (event.request.headers.get('accept')?.includes('text/html')) {
-          return caches.match('./index.html');
-        }
-      });
-    })
+      })
+      .catch(() => {
+        return caches.match(event.request).then(cachedResponse => {
+          if (cachedResponse) return cachedResponse;
+          if (event.request.headers.get('accept')?.includes('text/html')) {
+            return caches.match('./index.html');
+          }
+        });
+      })
   );
 });

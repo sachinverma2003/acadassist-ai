@@ -1787,40 +1787,51 @@ if (printReportBtn) {
 /* ==========================================================================
    10. Midnight Dark Mode & PWA Service Worker
    ========================================================================== */
-const themeToggleBtn = document.querySelector('#theme-toggle-btn');
-
 function applyTheme(isDark) {
   document.documentElement.classList.toggle('dark-mode', isDark);
   document.body.classList.toggle('dark-mode', isDark);
-  if (themeToggleBtn) {
-    themeToggleBtn.textContent = isDark ? '☀️' : '🌙';
-    themeToggleBtn.setAttribute('title', isDark ? 'Switch to light mode' : 'Switch to dark mode');
-  }
-  localStorage.setItem('acadassist_theme', isDark ? 'dark' : 'light');
+  document.querySelectorAll('.theme-toggle-btn').forEach(btn => {
+    btn.textContent = isDark ? '☀️' : '🌙';
+    btn.setAttribute('title', isDark ? 'Switch to light mode' : 'Switch to dark mode');
+    btn.setAttribute('aria-label', isDark ? 'Switch to light mode' : 'Switch to dark mode');
+  });
+  try {
+    localStorage.setItem('acadassist_theme', isDark ? 'dark' : 'light');
+  } catch (e) {}
 }
 
 function initTheme() {
   const savedTheme = localStorage.getItem('acadassist_theme');
   const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-  const isDark = savedTheme ? savedTheme === 'dark' : prefersDark;
+  const isDark = savedTheme ? (savedTheme === 'dark') : (document.documentElement.classList.contains('dark-mode') || prefersDark);
 
   applyTheme(isDark);
 
-  if (themeToggleBtn && !themeToggleBtn.dataset.bound) {
-    themeToggleBtn.dataset.bound = 'true';
-    themeToggleBtn.addEventListener('click', event => {
-      event.preventDefault();
-      const currentlyDark = document.body.classList.contains('dark-mode');
-      applyTheme(!currentlyDark);
-    });
-  }
+  document.querySelectorAll('.theme-toggle-btn').forEach(btn => {
+    if (!btn.dataset.bound) {
+      btn.dataset.bound = 'true';
+      btn.addEventListener('click', event => {
+        event.preventDefault();
+        event.stopPropagation();
+        if (typeof window.toggleTheme === 'function') {
+          window.toggleTheme();
+        } else {
+          const currentlyDark = document.body.classList.contains('dark-mode');
+          applyTheme(!currentlyDark);
+        }
+      });
+    }
+  });
 }
 
-// Service Worker Registration for Offline PWA
+// Service Worker Registration for Offline PWA with auto-update
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
     navigator.serviceWorker.register('./sw.js')
-      .then(reg => console.log('AcadAssist PWA active', reg.scope))
+      .then(reg => {
+        console.log('AcadAssist PWA active', reg.scope);
+        reg.update();
+      })
       .catch(err => console.warn('PWA registration error', err));
   });
 }
