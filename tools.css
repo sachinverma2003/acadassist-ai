@@ -481,7 +481,155 @@
   padding: 0;
 }
 
-/* Target CGPA Goal Planner */
+/* University Preset Selector */
+.preset-selector-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #f8f9fe;
+  border: 1px solid #e2e6f4;
+  border-radius: 8px;
+  padding: 8px 12px;
+  margin-bottom: 16px;
+  font-size: 11px;
+}
+
+.preset-selector-container label {
+  color: var(--muted);
+  font-weight: 600;
+}
+
+.preset-dropdown {
+  border: 1px solid #dfe1e9;
+  border-radius: 5px;
+  padding: 5px 8px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--ink);
+  background: #fff;
+  cursor: pointer;
+  outline-color: var(--blue);
+}
+
+/* 8-Semester Transcript */
+.transcript-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.sem-card {
+  background: #f9faff;
+  border: 1px solid #e1e6f4;
+  border-radius: 8px;
+  padding: 10px;
+  transition: all 0.15s ease;
+}
+
+.sem-card:hover {
+  border-color: #c7d2f8;
+}
+
+.sem-card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.sem-title {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.sem-inputs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+}
+
+.sem-inputs label {
+  font-size: 9px;
+  color: var(--muted);
+  font-weight: 600;
+}
+
+.sem-inputs input {
+  width: 100%;
+  border: 1px solid #dfe1e9;
+  border-radius: 5px;
+  padding: 6px 7px;
+  font-size: 11px;
+  margin-top: 2px;
+  background: #fff;
+  color: var(--ink);
+}
+
+/* Transcript Summary & Progression Curve */
+.transcript-summary-box {
+  background: linear-gradient(135deg, #f4f7ff 0%, #eefbf6 100%);
+  border: 1px solid #d4defc;
+  border-radius: 12px;
+  padding: 18px;
+  margin-top: 18px;
+}
+
+.transcript-stats-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.transcript-cgpa-score {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 36px;
+  font-weight: 800;
+  color: var(--blue);
+  line-height: 1;
+}
+
+.transcript-cgpa-score small {
+  font-size: 13px;
+  color: var(--muted);
+  font-weight: 600;
+}
+
+.progression-curve-container {
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px solid rgba(0, 0, 0, 0.07);
+}
+
+.progression-curve-header {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--muted);
+  margin-bottom: 8px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.progression-svg-chart {
+  width: 100%;
+  height: 90px;
+}
+
+@media (max-width: 800px) {
+  .transcript-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 480px) {
+  .transcript-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
 .target-planner-form .input-grid {
   margin-bottom: 14px;
 }

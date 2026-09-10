@@ -476,22 +476,67 @@ function loadDetailedAttendanceState() {
    4. SGPA & CGPA Suite Logic
    ========================================================================== */
 
-const GRADE_POINTS = {
-  'O': 10,
-  'A+': 9,
-  'A': 8,
-  'B+': 7,
-  'B': 6,
-  'C': 5,
-  'P': 4,
-  'F': 0
+const PRESET_GRADE_SCALES = {
+  ugc: {
+    name: 'UGC / AICTE Standard (10-point)',
+    help: 'Grades follow standard 10-point scale (O=10, A+=9, A=8, B+=7, B=6, C=5, P=4, F=0).',
+    grades: { 'O': 10, 'A+': 9, 'A': 8, 'B+': 7, 'B': 6, 'C': 5, 'P': 4, 'F': 0 }
+  },
+  vtu: {
+    name: 'VTU Karnataka',
+    help: 'VTU 10-point scale: S=10, A=9, B=8, C=7, D=6, E=4, F=0.',
+    grades: { 'S': 10, 'A': 9, 'B': 8, 'C': 7, 'D': 6, 'E': 4, 'F': 0 }
+  },
+  aktu: {
+    name: 'AKTU Uttar Pradesh',
+    help: 'AKTU 10-point scale: A+=10, A=9, B+=8, B=7, C+=6, C=5, D=4, F=0.',
+    grades: { 'A+': 10, 'A': 9, 'B+': 8, 'B': 7, 'C+': 6, 'C': 5, 'D': 4, 'F': 0 }
+  },
+  anna: {
+    name: 'Anna University',
+    help: 'Anna Univ 10-point scale: O=10, A+=9, A=8, B+=7, B=6, C=5, RA=0.',
+    grades: { 'O': 10, 'A+': 9, 'A': 8, 'B+': 7, 'B': 6, 'C': 5, 'RA': 0 }
+  },
+  us: {
+    name: 'US / International (4.0 Scale)',
+    help: 'US 4.0 Scale: A=4.0, A-=3.7, B+=3.3, B=3.0, B-=2.7, C+=2.3, C=2.0, D=1.0, F=0.0.',
+    grades: { 'A': 4.0, 'A-': 3.7, 'B+': 3.3, 'B': 3.0, 'B-': 2.7, 'C+': 2.3, 'C': 2.0, 'D': 1.0, 'F': 0.0 }
+  }
 };
+
+let activePresetKey = 'ugc';
+let GRADE_POINTS = PRESET_GRADE_SCALES[activePresetKey].grades;
 
 let aicteFormulaMode = true; // true: (SGPA - 0.75) * 10, false: SGPA * 10
 const courseRowsContainer = document.querySelector('#course-rows');
 const courseCountLabel = document.querySelector('#sgpa-courses-count');
+const presetDropdown = document.querySelector('#grading-scale-preset');
+const scaleHelpText = document.querySelector('#scale-help-text');
+
+if (presetDropdown) {
+  presetDropdown.addEventListener('change', () => {
+    activePresetKey = presetDropdown.value;
+    const preset = PRESET_GRADE_SCALES[activePresetKey] || PRESET_GRADE_SCALES.ugc;
+    GRADE_POINTS = preset.grades;
+    if (scaleHelpText) scaleHelpText.textContent = preset.help;
+
+    // Refresh course rows options
+    const rows = [...courseRowsContainer.querySelectorAll('.gpa-course-row')];
+    rows.forEach(row => {
+      const currentGrade = row.querySelector('.course-grade').value;
+      const select = row.querySelector('.course-grade');
+      select.innerHTML = Object.keys(GRADE_POINTS).map(g =>
+        `<option value="${g}" ${g === currentGrade ? 'selected' : ''}>Grade ${g} (${GRADE_POINTS[g]} pts)</option>`
+      ).join('');
+    });
+    saveGpaCourses();
+  });
+}
 
 function createCourseRow(name = '', credits = 4, grade = 'A+') {
+  const gradeKeys = Object.keys(GRADE_POINTS);
+  const selectedGrade = gradeKeys.includes(grade) ? grade : gradeKeys[0];
+
   return `
     <div class="gpa-course-row">
       <input class="course-name" type="text" placeholder="Course title" value="${escapeHtml(name)}" required />
@@ -499,7 +544,7 @@ function createCourseRow(name = '', credits = 4, grade = 'A+') {
         ${[1, 2, 3, 4, 5, 6].map(c => `<option value="${c}" ${c === Number(credits) ? 'selected' : ''}>${c} Credit${c > 1 ? 's' : ''}</option>`).join('')}
       </select>
       <select class="course-grade" aria-label="Earned grade">
-        ${Object.keys(GRADE_POINTS).map(g => `<option value="${g}" ${g === grade ? 'selected' : ''}>Grade ${g} (${GRADE_POINTS[g]} pts)</option>`).join('')}
+        ${gradeKeys.map(g => `<option value="${g}" ${g === selectedGrade ? 'selected' : ''}>Grade ${g} (${GRADE_POINTS[g]} pts)</option>`).join('')}
       </select>
       <button class="remove-row remove-course-btn" type="button" aria-label="Remove course">×</button>
     </div>
@@ -584,7 +629,6 @@ if (toggleFormulaBtn) {
       formulaNameSpan.textContent = 'Formula: Direct SGPA × 10';
       toggleFormulaBtn.textContent = 'Switch to AICTE formula';
     }
-    // Recalculate percent if result card is visible
     const scoreVal = parseFloat(document.querySelector('#sgpa-score-val').textContent);
     if (!isNaN(scoreVal)) {
       const pct = aicteFormulaMode ? Math.max(0, (scoreVal - 0.75) * 10) : scoreVal * 10;
@@ -617,7 +661,7 @@ document.querySelector('#sgpa-form').addEventListener('submit', event => {
   const pct = aicteFormulaMode ? Math.max(0, (sgpa - 0.75) * 10) : sgpa * 10;
 
   const resultCard = document.querySelector('#sgpa-result');
-  document.querySelector('#sgpa-score-val').innerHTML = `${sgpa.toFixed(2)} <small>/ 10.0</small>`;
+  document.querySelector('#sgpa-score-val').innerHTML = `${sgpa.toFixed(2)} <small>/ ${activePresetKey === 'us' ? '4.0' : '10.0'}</small>`;
   document.querySelector('#sgpa-credits-val').textContent = `${totalCredits} Credits`;
   sgpaPctVal.textContent = `${pct.toFixed(1)}%`;
 
@@ -625,12 +669,16 @@ document.querySelector('#sgpa-form').addEventListener('submit', event => {
   saveGpaCourses();
 });
 
-// Mode Switch: SGPA vs CGPA Target Planner
+// Mode Switch: SGPA vs CGPA Target Planner vs 8-Semester Transcript
 document.querySelectorAll('[data-gpa-mode]').forEach(btn => {
   btn.addEventListener('click', () => {
-    const isSgpa = btn.dataset.gpaMode === 'sgpa';
-    document.querySelector('#sgpa-panel').hidden = !isSgpa;
-    document.querySelector('#cgpa-panel').hidden = isSgpa;
+    const mode = btn.dataset.gpaMode;
+    document.querySelector('#sgpa-panel').hidden = mode !== 'sgpa';
+    document.querySelector('#cgpa-panel').hidden = mode !== 'cgpa';
+    const transcriptPanel = document.querySelector('#transcript-panel');
+    if (transcriptPanel) transcriptPanel.hidden = mode !== 'transcript';
+    if (mode === 'transcript') renderTranscript();
+
     document.querySelectorAll('[data-gpa-mode]').forEach(t => {
       const active = t === btn;
       t.classList.toggle('active', active);
@@ -638,6 +686,194 @@ document.querySelectorAll('[data-gpa-mode]').forEach(btn => {
     });
   });
 });
+
+/* --------------------------------------------------------------------------
+   8-Semester Cumulative Transcript Engine
+   -------------------------------------------------------------------------- */
+let transcriptData = [
+  { sem: 1, sgpa: '8.10', credits: '20' },
+  { sem: 2, sgpa: '8.35', credits: '22' },
+  { sem: 3, sgpa: '8.50', credits: '24' },
+  { sem: 4, sgpa: '8.45', credits: '22' },
+  { sem: 5, sgpa: '', credits: '22' },
+  { sem: 6, sgpa: '', credits: '22' },
+  { sem: 7, sgpa: '', credits: '20' },
+  { sem: 8, sgpa: '', credits: '18' }
+];
+
+function loadTranscriptData() {
+  const saved = localStorage.getItem('acadassist_transcript_data');
+  if (saved) {
+    try {
+      const parsed = JSON.parse(saved);
+      if (Array.isArray(parsed) && parsed.length === 8) {
+        transcriptData = parsed;
+      }
+    } catch (e) {
+      console.warn('Could not restore transcript', e);
+    }
+  }
+}
+
+function saveTranscriptData() {
+  localStorage.setItem('acadassist_transcript_data', JSON.stringify(transcriptData));
+}
+
+function renderTranscript() {
+  const grid = document.querySelector('#transcript-grid');
+  if (!grid) return;
+
+  grid.innerHTML = transcriptData.map((item, idx) => `
+    <div class="sem-card">
+      <div class="sem-card-top">
+        <span class="sem-title">Semester ${item.sem}</span>
+        <small style="color:var(--muted); font-size:10px;">${item.sgpa ? 'Completed' : 'Pending'}</small>
+      </div>
+      <div class="sem-inputs">
+        <label>SGPA
+          <input type="number" step="0.01" min="0" max="10" placeholder="e.g. 8.2" value="${item.sgpa}" data-sem-idx="${idx}" class="sem-sgpa-input" />
+        </label>
+        <label>Credits
+          <input type="number" min="0" max="40" placeholder="Credits" value="${item.credits}" data-sem-idx="${idx}" class="sem-cred-input" />
+        </label>
+      </div>
+    </div>
+  `).join('');
+
+  calculateTranscript();
+}
+
+function calculateTranscript() {
+  let totalCredits = 0;
+  let totalPoints = 0;
+  const validPoints = [];
+
+  transcriptData.forEach((item, idx) => {
+    const s = parseFloat(item.sgpa);
+    const c = parseFloat(item.credits);
+    if (!isNaN(s) && !isNaN(c) && s > 0 && c > 0) {
+      totalCredits += c;
+      totalPoints += s * c;
+      validPoints.push({ sem: idx + 1, sgpa: s });
+    }
+  });
+
+  const cgpaEl = document.querySelector('#transcript-cgpa-val');
+  const creditsEl = document.querySelector('#transcript-credits-val');
+  const pctEl = document.querySelector('#transcript-pct-val');
+  const classEl = document.querySelector('#transcript-class-val');
+  const trendEl = document.querySelector('#progression-trend-label');
+
+  if (!cgpaEl) return;
+
+  if (totalCredits > 0) {
+    const cgpa = totalPoints / totalCredits;
+    const pct = aicteFormulaMode ? Math.max(0, (cgpa - 0.75) * 10) : cgpa * 10;
+    cgpaEl.innerHTML = `${cgpa.toFixed(2)} <small>/ ${activePresetKey === 'us' ? '4.0' : '10.0'}</small>`;
+    creditsEl.textContent = `${totalCredits} Credits`;
+    pctEl.textContent = `${pct.toFixed(1)}%`;
+
+    if (cgpa >= 8.5) {
+      classEl.textContent = 'First Class with Distinction';
+      classEl.style.background = '#edf9f4';
+      classEl.style.color = '#1a7a53';
+    } else if (cgpa >= 6.75) {
+      classEl.textContent = 'First Class';
+      classEl.style.background = '#edf2ff';
+      classEl.style.color = '#4052b5';
+    } else if (cgpa >= 5.75) {
+      classEl.textContent = 'Second Class';
+      classEl.style.background = '#fff8eb';
+      classEl.style.color = '#a06716';
+    } else {
+      classEl.textContent = 'Pass Class';
+      classEl.style.background = '#f2f3f7';
+      classEl.style.color = '#596079';
+    }
+
+    if (validPoints.length >= 2) {
+      const first = validPoints[0].sgpa;
+      const last = validPoints[validPoints.length - 1].sgpa;
+      if (last > first + 0.1) {
+        trendEl.textContent = 'Trend: Upward ↗';
+        trendEl.style.color = '#277c57';
+      } else if (last < first - 0.1) {
+        trendEl.textContent = 'Trend: Declining ↘';
+        trendEl.style.color = '#c64e4b';
+      } else {
+        trendEl.textContent = 'Trend: Consistent →';
+        trendEl.style.color = '#4052b5';
+      }
+    }
+  } else {
+    cgpaEl.innerHTML = `0.00 <small>/ 10.0</small>`;
+    creditsEl.textContent = '0 Credits';
+    pctEl.textContent = '0.0%';
+    classEl.textContent = 'No data yet';
+  }
+
+  drawProgressionChart(validPoints);
+  saveTranscriptData();
+}
+
+function drawProgressionChart(points) {
+  const svg = document.querySelector('#progression-svg');
+  if (!svg) return;
+
+  if (points.length < 2) {
+    svg.innerHTML = `<text x="200" y="50" text-anchor="middle" fill="#888" font-size="12">Enter 2 or more semesters with SGPA to view the progression curve.</text>`;
+    return;
+  }
+
+  const width = 400;
+  const height = 90;
+  const pad = 20;
+
+  const minGpa = Math.min(...points.map(p => p.sgpa), 6.0);
+  const maxGpa = Math.max(...points.map(p => p.sgpa), 10.0);
+  const range = maxGpa - minGpa || 1;
+
+  const coords = points.map((p, i) => {
+    const x = pad + (i / (points.length - 1)) * (width - 2 * pad);
+    const y = height - pad - ((p.sgpa - minGpa) / range) * (height - 2 * pad);
+    return { x, y, sem: p.sem, sgpa: p.sgpa };
+  });
+
+  const polylinePoints = coords.map(c => `${c.x},${c.y}`).join(' ');
+
+  const dots = coords.map(c => `
+    <circle cx="${c.x}" cy="${c.y}" r="4" fill="#5267ee" stroke="#ffffff" stroke-width="2" />
+    <text x="${c.x}" y="${c.y - 7}" font-size="9" font-family="'DM Sans', sans-serif" font-weight="700" fill="#202758" text-anchor="middle">${c.sgpa.toFixed(1)}</text>
+    <text x="${c.x}" y="${height - 4}" font-size="8" font-family="'DM Sans', sans-serif" fill="#7a8296" text-anchor="middle">S${c.sem}</text>
+  `).join('');
+
+  svg.innerHTML = `
+    <defs>
+      <linearGradient id="gradPath" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#5267ee" />
+        <stop offset="100%" stop-color="#43b786" />
+      </linearGradient>
+    </defs>
+    <line x1="${pad}" y1="${height - pad}" x2="${width - pad}" y2="${height - pad}" stroke="#e7eaf3" stroke-width="1" />
+    <polyline points="${polylinePoints}" fill="none" stroke="url(#gradPath)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
+    ${dots}
+  `;
+}
+
+// Transcript Input Event Delegation
+document.addEventListener('input', event => {
+  if (event.target.classList.contains('sem-sgpa-input') || event.target.classList.contains('sem-cred-input')) {
+    const idx = parseInt(event.target.dataset.semIdx, 10);
+    const card = event.target.closest('.sem-card');
+    const sgpaVal = card.querySelector('.sem-sgpa-input').value;
+    const credVal = card.querySelector('.sem-cred-input').value;
+
+    transcriptData[idx].sgpa = sgpaVal;
+    transcriptData[idx].credits = credVal;
+    calculateTranscript();
+  }
+});
+
 
 // Target CGPA Goal Planner
 document.querySelector('#cgpa-form').addEventListener('submit', event => {
@@ -1159,6 +1395,8 @@ document.addEventListener('DOMContentLoaded', () => {
   loadQuickAttendanceState();
   loadDetailedAttendanceState();
   loadGpaCourses();
+  loadTranscriptData();
+  renderTranscript();
   loadExams();
   calculateInternals();
   initTodaysHub();
@@ -1168,7 +1406,10 @@ document.addEventListener('DOMContentLoaded', () => {
 loadQuickAttendanceState();
 loadDetailedAttendanceState();
 loadGpaCourses();
+loadTranscriptData();
+renderTranscript();
 loadExams();
 calculateInternals();
 initTodaysHub();
+
 

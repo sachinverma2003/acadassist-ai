@@ -250,6 +250,7 @@
             <div class="mode-tabs" role="tablist">
               <button class="mode-tab active" type="button" id="tab-sgpa" data-gpa-mode="sgpa" role="tab" aria-selected="true">SGPA Calculator</button>
               <button class="mode-tab" type="button" id="tab-cgpa" data-gpa-mode="cgpa" role="tab" aria-selected="false">Target CGPA Goal</button>
+              <button class="mode-tab" type="button" id="tab-transcript" data-gpa-mode="transcript" role="tab" aria-selected="false">8-Semester Transcript 📜</button>
             </div>
 
             <!-- SGPA Panel -->
@@ -261,13 +262,25 @@
                 </div>
                 <div class="save-pill"><span class="save-pill-dot"></span> Auto-saved</div>
               </div>
+
+              <div class="preset-selector-container">
+                <label for="grading-scale-preset">Grading System Preset:</label>
+                <select id="grading-scale-preset" class="preset-dropdown">
+                  <option value="ugc" selected>UGC / AICTE Standard (10-point)</option>
+                  <option value="vtu">VTU Karnataka (10-point: S, A, B, C, D, E, F)</option>
+                  <option value="aktu">AKTU Uttar Pradesh (10-point: A+, A, B+, B, C, D, F)</option>
+                  <option value="anna">Anna University (10-point: O, A+, A, B+, B, C, RA)</option>
+                  <option value="us">US / International (4.0 Scale: A, B, C, D, F)</option>
+                </select>
+              </div>
+
               <form id="sgpa-form" novalidate>
                 <div class="form-section" style="border-top:none; padding-top:0; margin-top:0;">
                   <div class="form-section-title">
                     <b>Courses & Credits</b>
                     <button class="small-button" id="add-course-btn" type="button">+ Add Course</button>
                   </div>
-                  <p class="field-help">Default grades follow standard 10-point scale (O=10, A+=9, A=8, B+=7, B=6, C=5, P=4, F=0).</p>
+                  <p class="field-help" id="scale-help-text">Grades follow standard 10-point scale (O=10, A+=9, A=8, B+=7, B=6, C=5, P=4, F=0).</p>
                   <div id="course-rows"></div>
                 </div>
                 <div class="gpa-actions-bar">
@@ -326,6 +339,43 @@
               </form>
 
               <div class="planner-advice-box" id="cgpa-result" hidden aria-live="polite"></div>
+            </div>
+
+            <!-- 8-Semester Transcript Panel -->
+            <div class="tool-card-box" id="transcript-panel" hidden>
+              <div class="tool-header">
+                <div>
+                  <h3>8-Semester Cumulative Transcript</h3>
+                  <p>Track your degree progression semester-by-semester.</p>
+                </div>
+                <div class="save-pill"><span class="save-pill-dot"></span> Auto-saved</div>
+              </div>
+
+              <div class="transcript-grid" id="transcript-grid">
+                <!-- Dynamically populated 8 semesters -->
+              </div>
+
+              <div class="transcript-summary-box">
+                <div class="transcript-stats-row">
+                  <div>
+                    <span style="font-size:11px; font-weight:700; color:var(--muted); text-transform:uppercase; letter-spacing:0.05em;">Cumulative CGPA</span>
+                    <div class="transcript-cgpa-score" id="transcript-cgpa-val">8.35 <small>/ 10.0</small></div>
+                  </div>
+                  <div class="gpa-badges">
+                    <span class="badge-pill credits" id="transcript-credits-val">88 Credits</span>
+                    <span class="badge-pill pct" id="transcript-pct-val">76.0%</span>
+                    <span class="badge-pill credits" id="transcript-class-val" style="background:#edf2ff; color:#4052b5;">First Class with Distinction</span>
+                  </div>
+                </div>
+
+                <div class="progression-curve-container">
+                  <div class="progression-curve-header">
+                    <span>SEMESTER SGPA PROGRESSION</span>
+                    <span id="progression-trend-label" style="color:#277c57; font-weight:700;">Trend: Upward</span>
+                  </div>
+                  <svg class="progression-svg-chart" id="progression-svg" viewBox="0 0 400 90" preserveAspectRatio="none"></svg>
+                </div>
+              </div>
             </div>
           </div>
         </div>
