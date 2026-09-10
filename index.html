@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="AcadAssist.ai — practical academic tools for students." />
+    <meta name="description" content="AcadAssist.ai — practical academic tools for students: Attendance Planner, CGPA/SGPA Calculator, Internal Marks Predictor, and Exam Countdown." />
     <title>AcadAssist.ai — Your Academic Assistant</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -12,13 +12,20 @@
     <link rel="stylesheet" href="attendance-planner.css" />
     <link rel="stylesheet" href="mode-switcher.css" />
     <link rel="stylesheet" href="holiday-picker.css" />
+    <link rel="stylesheet" href="tools.css" />
   </head>
   <body>
     <header class="site-header">
       <a class="brand" href="#home" aria-label="AcadAssist.ai home"><span class="brand-mark">A</span>AcadAssist<span>.ai</span></a>
       <button class="menu-toggle" aria-label="Open menu" aria-expanded="false">☰</button>
       <nav class="nav-links" aria-label="Main navigation">
-        <a class="active" href="#home">Home</a><a href="#tools">Tools</a><a href="#ai">AI Assistant</a><a href="#about">About</a>
+        <a class="active" href="#home">Home</a>
+        <a href="#attendance">Attendance</a>
+        <a href="#gpa">GPA & CGPA</a>
+        <a href="#internals">Internal Marks</a>
+        <a href="#exams">Exam Countdown</a>
+        <a href="#ai">AI Assistant</a>
+        <a href="#about">About</a>
         <a class="nav-cta" href="#attendance">Try calculator <span>→</span></a>
       </nav>
     </header>
@@ -29,54 +36,399 @@
           <div class="eyebrow"><span></span> Built for students, by students</div>
           <h1>Make your academic life <em>simpler.</em></h1>
           <p>Everything you need to stay on top of attendance, marks, grades and exams — all in one focused place.</p>
-          <div class="hero-actions"><a class="button primary" href="#attendance">Start with attendance <span>→</span></a><a class="button text" href="#tools">Explore all tools <span>↓</span></a></div>
-          <div class="trust"><div class="avatars"><i>R</i><i>S</i><i>A</i></div><span>Made to make student life easier.</span></div>
+          <div class="hero-actions">
+            <a class="button primary" href="#attendance">Start with attendance <span>→</span></a>
+            <a class="button text" href="#tools">Explore all tools <span>↓</span></a>
+          </div>
+          <div class="trust">
+            <div class="avatars"><i>R</i><i>S</i><i>A</i></div>
+            <span>Made to make student life easier.</span>
+          </div>
         </div>
         <div class="hero-art" aria-hidden="true">
           <div class="orb orb-one"></div><div class="orb orb-two"></div>
-          <div class="schedule-card"><div class="schedule-top"><span>Today’s overview</span><b>•••</b></div><div class="schedule-date">Monday, 24 August</div><div class="class-row"><span class="dot blue"></span><div><b>Data Structures</b><small>09:00 — 10:00 AM</small></div><strong>Present</strong></div><div class="class-row"><span class="dot purple"></span><div><b>Mathematics III</b><small>11:15 — 12:15 PM</small></div><strong>Present</strong></div><div class="class-row faded"><span class="dot orange"></span><div><b>Computer Networks</b><small>02:00 — 03:00 PM</small></div><strong>Next</strong></div></div>
+          <div class="schedule-card">
+            <div class="schedule-top"><span>Today’s overview</span><b>•••</b></div>
+            <div class="schedule-date">Monday, 24 August</div>
+            <div class="class-row"><span class="dot blue"></span><div><b>Data Structures</b><small>09:00 — 10:00 AM</small></div><strong>Present</strong></div>
+            <div class="class-row"><span class="dot purple"></span><div><b>Mathematics III</b><small>11:15 — 12:15 PM</small></div><strong>Present</strong></div>
+            <div class="class-row faded"><span class="dot orange"></span><div><b>Computer Networks</b><small>02:00 — 03:00 PM</small></div><strong>Next</strong></div>
+          </div>
           <div class="floating-score"><span>Attendance</span><b>84%</b><div><i></i></div><small>+4% this month</small></div>
           <div class="floating-count"><span>✦</span><b>7 days</b><small>until your next exam</small></div>
         </div>
       </section>
 
       <section class="tools-section" id="tools">
-        <div class="section-heading"><div><p class="kicker">YOUR ACADEMIC TOOLKIT</p><h2>Small tools. <em>Big relief.</em></h2></div><p>Simple, fast and designed to help you make better decisions throughout your semester.</p></div>
+        <div class="section-heading">
+          <div><p class="kicker">YOUR ACADEMIC TOOLKIT</p><h2>Small tools. <em>Big relief.</em></h2></div>
+          <p>Simple, fast and designed to help you make better decisions throughout your semester.</p>
+        </div>
         <div class="tool-grid">
-          <a class="tool-card featured" href="#attendance"><span class="icon attendance">▥</span><b>Attendance Calculator</b><p>Know exactly where you stand, and how many classes you need.</p><span class="card-link">Calculate attendance →</span></a>
-          <a class="tool-card" href="#coming-soon"><span class="icon grade">⌁</span><b>CGPA Calculator</b><p>Track your cumulative grade point average with ease.</p><span class="card-link">Coming next →</span></a>
-          <a class="tool-card" href="#coming-soon"><span class="icon sgpa">◈</span><b>SGPA Calculator</b><p>Calculate your semester performance in seconds.</p><span class="card-link">Coming next →</span></a>
-          <a class="tool-card" href="#coming-soon"><span class="icon marks">✓</span><b>Internal Marks</b><p>See what you need to score before the final exam.</p><span class="card-link">Coming next →</span></a>
-          <a class="tool-card" href="#coming-soon"><span class="icon exam">◷</span><b>Exam Countdown</b><p>Keep your important dates in clear focus.</p><span class="card-link">Coming next →</span></a>
+          <a class="tool-card featured" href="#attendance">
+            <span class="icon attendance">▥</span>
+            <b>Attendance Calculator</b>
+            <p>Know exactly where you stand, and how many classes you can afford to miss.</p>
+            <span class="card-link">Calculate attendance →</span>
+          </a>
+          <a class="tool-card" href="#gpa">
+            <span class="icon grade">⌁</span>
+            <b>CGPA Calculator</b>
+            <p>Track cumulative GPA and project target semester requirements.</p>
+            <span class="card-link">Plan target CGPA →</span>
+          </a>
+          <a class="tool-card" href="#gpa">
+            <span class="icon sgpa">◈</span>
+            <b>SGPA Calculator</b>
+            <p>Calculate semester performance instantly with UGC 10-point scale.</p>
+            <span class="card-link">Calculate SGPA →</span>
+          </a>
+          <a class="tool-card" href="#internals">
+            <span class="icon marks">✓</span>
+            <b>Internal Marks</b>
+            <p>See the exact marks you need in finals to pass or get your dream grade.</p>
+            <span class="card-link">Predict passing marks →</span>
+          </a>
+          <a class="tool-card" href="#exams">
+            <span class="icon exam">◷</span>
+            <b>Exam Countdown</b>
+            <p>Live countdown tickers and syllabus preparation status tracker.</p>
+            <span class="card-link">Track upcoming exams →</span>
+          </a>
         </div>
       </section>
 
+      <!-- Attendance Calculator Section -->
       <section class="calculator-section" id="attendance">
-        <div class="calc-intro"><p class="kicker">ATTENDANCE CALCULATOR</p><h2>Stay ahead of the <em>75% rule.</em></h2><p>Use a quick calculation when that’s all you need, or plan your entire semester subject by subject.</p><div class="tip"><span>✦</span><p><b>Choose your level</b>The detailed planner automatically excludes India’s national holidays, plus any college or state holidays you add.</p></div></div>
-        <div class="planner-shell">
-          <div class="mode-tabs" role="tablist"><button class="mode-tab active" type="button" data-mode="quick" role="tab" aria-selected="true">Quick calculator</button><button class="mode-tab" type="button" data-mode="detailed" role="tab" aria-selected="false">Semester planner</button></div>
-          <div class="calculator-card quick-panel" id="quick-panel">
-            <div class="calc-header"><div><h3>Quick attendance check</h3><p>For a single subject — no timetable required.</p></div><span class="calc-badge">◉ Instant result</span></div>
-            <form id="quick-form" novalidate><div class="input-grid"><label>Classes held<input id="quick-held" type="number" min="1" placeholder="e.g. 48" required /></label><label>Classes attended<input id="quick-attended" type="number" min="0" placeholder="e.g. 38" required /></label></div><label class="target-label">Your target attendance <output for="quick-target" id="quick-target-output">75%</output><input id="quick-target" type="range" min="1" max="100" value="75" /><span class="range-scale"><i>50%</i><i>75%</i><i>100%</i></span></label><p id="quick-error" class="form-error" role="alert"></p><button class="button primary calculate" type="submit">Calculate now <span>→</span></button></form><div class="result quick-result" id="quick-result" hidden aria-live="polite"></div>
+        <div class="calc-intro">
+          <p class="kicker">ATTENDANCE CALCULATOR</p>
+          <h2>Stay ahead of the <em>75% rule.</em></h2>
+          <p>Use a quick calculation when that’s all you need, or plan your entire semester subject by subject.</p>
+          <div class="tip">
+            <span>✦</span>
+            <p><b>Choose your level</b>The detailed planner automatically excludes India’s national holidays, plus any college or state holidays you add.</p>
           </div>
-        <div class="calculator-card detailed-panel" id="detailed-panel" hidden>
-          <div class="calc-header"><div><h3>Plan your semester attendance</h3><p>Your information stays in this browser.</p></div><span class="calc-badge">◉ Live planner</span></div>
-          <form id="attendance-form" novalidate>
-            <div class="form-section"><div class="form-section-title"><b>1. Semester details</b><span>Required</span></div><div class="input-grid"><label>Semester starts<input id="semester-start" type="date" required /></label><label>Semester ends<input id="semester-end" type="date" required /></label></div><p class="national-note">✓ Republic Day (26 Jan), Independence Day (15 Aug), and Gandhi Jayanti (2 Oct) are automatically excluded.</p><div class="holiday-label"><b>College / state holiday dates</b><span>Optional — select a date, then add it. Remove a date to correct it.</span><div class="holiday-picker"><input id="holiday-picker" type="date" aria-label="Choose a holiday date" /><button class="small-button" id="add-holiday" type="button">+ Add date</button></div><div id="selected-holidays" class="selected-holidays" aria-live="polite"></div><input id="holidays" type="hidden" /></div></div>
-            <div class="form-section"><div class="form-section-title"><b>2. Current attendance</b><button class="small-button" id="add-subject" type="button">+ Add subject</button></div><p class="field-help">Enter each subject’s classes held and attended so far.</p><div id="subject-rows" class="subject-rows"></div></div>
-            <div class="form-section"><div class="form-section-title"><b>3. Weekly timetable</b><button class="small-button" id="add-timetable" type="button">+ Add class</button></div><p class="field-help">Add one entry for each weekly class. Repeat a subject if it meets more than once.</p><div id="timetable-rows" class="timetable-rows"></div></div>
-            <label class="target-label">Your target attendance <output for="target" id="target-output">75%</output><input id="target" type="range" min="1" max="100" value="75" /><span class="range-scale"><i>50%</i><i>75%</i><i>100%</i></span></label>
-            <p id="form-error" class="form-error" role="alert"></p><button class="button primary calculate" type="submit">Build my attendance plan <span>→</span></button>
-          </form>
-          <div class="result" id="result" hidden aria-live="polite"></div>
-        </div></div>
+        </div>
+        <div class="planner-shell">
+          <div class="mode-tabs" role="tablist">
+            <button class="mode-tab active" type="button" data-mode="quick" role="tab" aria-selected="true">Quick calculator</button>
+            <button class="mode-tab" type="button" data-mode="detailed" role="tab" aria-selected="false">Semester planner</button>
+          </div>
+          <div class="calculator-card quick-panel" id="quick-panel">
+            <div class="calc-header">
+              <div><h3>Quick attendance check</h3><p>For a single subject — no timetable required.</p></div>
+              <span class="calc-badge">◉ Instant result</span>
+            </div>
+            <form id="quick-form" novalidate>
+              <div class="input-grid">
+                <label>Classes held<input id="quick-held" type="number" min="1" placeholder="e.g. 48" required /></label>
+                <label>Classes attended<input id="quick-attended" type="number" min="0" placeholder="e.g. 38" required /></label>
+              </div>
+              <label class="target-label">Your target attendance <output for="quick-target" id="quick-target-output">75%</output>
+                <input id="quick-target" type="range" min="1" max="100" value="75" />
+                <span class="range-scale"><i>50%</i><i>75%</i><i>100%</i></span>
+              </label>
+              <p id="quick-error" class="form-error" role="alert"></p>
+              <button class="button primary calculate" type="submit">Calculate now <span>→</span></button>
+            </form>
+            <div class="result quick-result" id="quick-result" hidden aria-live="polite"></div>
+          </div>
+          <div class="calculator-card detailed-panel" id="detailed-panel" hidden>
+            <div class="calc-header">
+              <div><h3>Plan your semester attendance</h3><p>Your information stays saved in this browser.</p></div>
+              <div class="save-pill"><span class="save-pill-dot"></span> Saved</div>
+            </div>
+            <form id="attendance-form" novalidate>
+              <div class="form-section">
+                <div class="form-section-title"><b>1. Semester details</b><span>Required</span></div>
+                <div class="input-grid">
+                  <label>Semester starts<input id="semester-start" type="date" required /></label>
+                  <label>Semester ends<input id="semester-end" type="date" required /></label>
+                </div>
+                <p class="national-note">✓ Republic Day (26 Jan), Independence Day (15 Aug), and Gandhi Jayanti (2 Oct) are automatically excluded.</p>
+                <div class="holiday-label">
+                  <b>College / state holiday dates</b><span>Optional — select a date, then add it. Remove a date to correct it.</span>
+                  <div class="holiday-picker">
+                    <input id="holiday-picker" type="date" aria-label="Choose a holiday date" />
+                    <button class="small-button" id="add-holiday" type="button">+ Add date</button>
+                  </div>
+                  <div id="selected-holidays" class="selected-holidays" aria-live="polite"></div>
+                  <input id="holidays" type="hidden" />
+                </div>
+              </div>
+              <div class="form-section">
+                <div class="form-section-title"><b>2. Current attendance</b><button class="small-button" id="add-subject" type="button">+ Add subject</button></div>
+                <p class="field-help">Enter each subject’s classes held and attended so far.</p>
+                <div id="subject-rows" class="subject-rows"></div>
+              </div>
+              <div class="form-section">
+                <div class="form-section-title"><b>3. Weekly timetable</b><button class="small-button" id="add-timetable" type="button">+ Add class</button></div>
+                <p class="field-help">Add one entry for each weekly class. Repeat a subject if it meets more than once.</p>
+                <div id="timetable-rows" class="timetable-rows"></div>
+              </div>
+              <label class="target-label">Your target attendance <output for="target" id="target-output">75%</output>
+                <input id="target" type="range" min="1" max="100" value="75" />
+                <span class="range-scale"><i>50%</i><i>75%</i><i>100%</i></span>
+              </label>
+              <p id="form-error" class="form-error" role="alert"></p>
+              <button class="button primary calculate" type="submit">Build my attendance plan <span>→</span></button>
+            </form>
+            <div class="result" id="result" hidden aria-live="polite"></div>
+          </div>
+        </div>
       </section>
 
-      <section class="ai-banner" id="ai"><div><p class="kicker">COMING IN V2</p><h2>Your study companion is<br /><em>getting smarter.</em></h2><p>Ask questions, simplify topics, build study plans and practise better — with AI that understands student life.</p><a class="button light" href="mailto:hello@acadassistai.in?subject=AcadAssistAI%20early%20access">Join the early list <span>→</span></a></div><div class="ai-spark" aria-hidden="true">✦</div></section>
-      <section class="about" id="about"><p class="kicker">WHY ACADASSIST.AI</p><h2>Less academic stress.<br /><em>More clarity.</em></h2><p>AcadAssist.ai brings the everyday calculations and planning tools students actually need into one clean, distraction-free space.</p></section>
+      <!-- GPA & CGPA Suite -->
+      <section class="tool-section" id="gpa">
+        <div class="tool-section-grid">
+          <div class="tool-intro">
+            <p class="kicker">SEMESTER & CUMULATIVE GPA</p>
+            <h2>Smart GPA & <em>Target Planner.</em></h2>
+            <p>Calculate your semester SGPA with course-by-course credit weights, or project the exact grades needed in upcoming semesters to graduate with distinction.</p>
+            <div class="tip">
+              <span>✦</span>
+              <p><b>10-Point UGC / AICTE standard</b>Includes instant equivalent percentage conversion with standard and AICTE formula toggles.</p>
+            </div>
+          </div>
+          <div class="planner-shell">
+            <div class="mode-tabs" role="tablist">
+              <button class="mode-tab active" type="button" id="tab-sgpa" data-gpa-mode="sgpa" role="tab" aria-selected="true">SGPA Calculator</button>
+              <button class="mode-tab" type="button" id="tab-cgpa" data-gpa-mode="cgpa" role="tab" aria-selected="false">Target CGPA Goal</button>
+            </div>
+
+            <!-- SGPA Panel -->
+            <div class="tool-card-box" id="sgpa-panel">
+              <div class="tool-header">
+                <div>
+                  <h3>Semester SGPA Calculator</h3>
+                  <p>Add subjects, credit hours, and earned letter grades.</p>
+                </div>
+                <div class="save-pill"><span class="save-pill-dot"></span> Auto-saved</div>
+              </div>
+              <form id="sgpa-form" novalidate>
+                <div class="form-section" style="border-top:none; padding-top:0; margin-top:0;">
+                  <div class="form-section-title">
+                    <b>Courses & Credits</b>
+                    <button class="small-button" id="add-course-btn" type="button">+ Add Course</button>
+                  </div>
+                  <p class="field-help">Default grades follow standard 10-point scale (O=10, A+=9, A=8, B+=7, B=6, C=5, P=4, F=0).</p>
+                  <div id="course-rows"></div>
+                </div>
+                <div class="gpa-actions-bar">
+                  <span id="sgpa-courses-count" style="font-size:11px; color:var(--muted);">4 courses added</span>
+                  <button class="text-btn" id="reset-courses-btn" type="button">Reset courses</button>
+                </div>
+                <button class="button primary calculate" type="submit" id="calculate-sgpa-btn">Calculate SGPA <span>→</span></button>
+              </form>
+
+              <div class="gpa-result-card" id="sgpa-result" hidden aria-live="polite">
+                <div class="gpa-score-summary">
+                  <div>
+                    <span style="font-size:11px; font-weight:700; color:var(--muted); text-transform:uppercase; letter-spacing:0.05em;">Semester SGPA</span>
+                    <div class="gpa-big-score" id="sgpa-score-val">8.50 <small>/ 10.0</small></div>
+                  </div>
+                  <div class="gpa-badges">
+                    <span class="badge-pill credits" id="sgpa-credits-val">22 Credits</span>
+                    <span class="badge-pill pct" id="sgpa-pct-val">77.5%</span>
+                  </div>
+                </div>
+                <div class="gpa-formula-toggle">
+                  <span id="sgpa-formula-name">Formula: AICTE (SGPA - 0.75) × 10</span>
+                  <button type="button" class="formula-switch" id="toggle-formula-btn">Switch to SGPA × 10</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- CGPA Target Planner Panel -->
+            <div class="tool-card-box" id="cgpa-panel" hidden>
+              <div class="tool-header">
+                <div>
+                  <h3>Target CGPA Goal Planner</h3>
+                  <p>Calculate what average SGPA you must achieve in remaining semesters.</p>
+                </div>
+                <span class="calc-badge">◉ Feasibility check</span>
+              </div>
+              <form id="cgpa-form" class="target-planner-form" novalidate>
+                <div class="input-grid">
+                  <label>Current CGPA
+                    <input id="cgpa-current" type="number" step="0.01" min="0" max="10" placeholder="e.g. 7.60" required />
+                  </label>
+                  <label>Credits Completed So Far
+                    <input id="cgpa-completed-credits" type="number" min="1" max="250" placeholder="e.g. 80" required />
+                  </label>
+                </div>
+                <div class="input-grid">
+                  <label>Target Graduation CGPA
+                    <input id="cgpa-target" type="number" step="0.01" min="0" max="10" placeholder="e.g. 8.50" required />
+                  </label>
+                  <label>Remaining Credits
+                    <input id="cgpa-remaining-credits" type="number" min="1" max="250" placeholder="e.g. 40" required />
+                  </label>
+                </div>
+                <p id="cgpa-error" class="form-error" role="alert"></p>
+                <button class="button primary calculate" type="submit">Assess CGPA Goal <span>→</span></button>
+              </form>
+
+              <div class="planner-advice-box" id="cgpa-result" hidden aria-live="polite"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Internal Marks & Exam Predictor -->
+      <section class="tool-section" id="internals">
+        <div class="tool-section-grid">
+          <div class="tool-intro">
+            <p class="kicker">INTERNAL MARKS & PASSING PREDICTOR</p>
+            <h2>Know what you need <em>before finals.</em></h2>
+            <p>Don't enter exam week guessing. Combine your midterms, quizzes, and internal evaluations to see the exact marks required in the final exam to pass or reach your desired grade.</p>
+            <div class="tip">
+              <span>✦</span>
+              <p><b>Clear passing thresholds</b>Checks aggregate college passing criteria (e.g. 40% combined score) plus individual component minimums.</p>
+            </div>
+          </div>
+          <div class="tool-card-box">
+            <div class="tool-header">
+              <div>
+                <h3>Internal Marks & Final Exam Predictor</h3>
+                <p>Enter your internal assessment scores and select your end-sem target.</p>
+              </div>
+              <span class="calc-badge">◉ Live score meter</span>
+            </div>
+            <form id="internals-form" novalidate>
+              <div class="weightage-grid">
+                <div class="weightage-card">
+                  <span>Midterm 1 / Internal 1</span>
+                  <small>Scored vs Max</small>
+                  <div style="display:flex; gap:6px;">
+                    <input id="int-m1-score" type="number" min="0" max="100" placeholder="Score" value="24" required />
+                    <input id="int-m1-max" type="number" min="1" max="100" placeholder="Max" value="30" required />
+                  </div>
+                </div>
+                <div class="weightage-card">
+                  <span>Midterm 2 / Internal 2</span>
+                  <small>Scored vs Max</small>
+                  <div style="display:flex; gap:6px;">
+                    <input id="int-m2-score" type="number" min="0" max="100" placeholder="Score" value="26" required />
+                    <input id="int-m2-max" type="number" min="1" max="100" placeholder="Max" value="30" required />
+                  </div>
+                </div>
+                <div class="weightage-card">
+                  <span>Assignments & Lab</span>
+                  <small>Scored vs Max</small>
+                  <div style="display:flex; gap:6px;">
+                    <input id="int-ass-score" type="number" min="0" max="100" placeholder="Score" value="18" required />
+                    <input id="int-ass-max" type="number" min="1" max="100" placeholder="Max" value="20" required />
+                  </div>
+                </div>
+              </div>
+
+              <div class="input-grid">
+                <label>Final Exam Maximum Marks
+                  <input id="final-max" type="number" min="10" max="100" value="100" placeholder="e.g. 100" required />
+                </label>
+                <label>Internal Weightage (% of total course)
+                  <input id="int-weight" type="number" min="10" max="70" value="40" placeholder="e.g. 40" required />
+                </label>
+              </div>
+
+              <div style="margin-top:16px;">
+                <label style="font-size:12px; font-weight:700; color:var(--ink);">Select Your Target Grade</label>
+                <div class="target-grade-selector" id="grade-selector">
+                  <div class="grade-choice active" data-pct="40"><b>Pass</b><span>40% overall</span></div>
+                  <div class="grade-choice" data-pct="60"><b>First Class</b><span>60% overall</span></div>
+                  <div class="grade-choice" data-pct="75"><b>Distinction</b><span>75% overall</span></div>
+                  <div class="grade-choice" data-pct="85"><b>High Honor</b><span>85% overall</span></div>
+                </div>
+              </div>
+
+              <p id="internals-error" class="form-error" role="alert"></p>
+              <button class="button primary calculate" type="submit">Predict Required Final Marks <span>→</span></button>
+            </form>
+
+            <div class="internal-result-card" id="internals-result" hidden aria-live="polite">
+              <div class="internal-breakdown">
+                <span>Internal Contribution: <b id="internal-secured-stat">34.0 / 40</b></span>
+                <span id="internal-status-pill" style="font-weight:700; color:#36866c;">✓ Solid Base</span>
+              </div>
+              <div class="internal-meter">
+                <div class="internal-meter-fill" id="internal-meter-bar" style="width: 65%;"></div>
+              </div>
+              <div class="internal-needed-stat" id="final-needed-stat">
+                25 <small>/ 60 marks needed in Finals</small>
+              </div>
+              <p id="internal-advice-text" style="font-size:12px; color:var(--muted); margin:0; line-height:1.4;">
+                You need to score at least <strong>41.7%</strong> in the end-semester final exam to achieve your target.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Exam Countdown & Study Tracker -->
+      <section class="tool-section" id="exams">
+        <div class="tool-section-grid">
+          <div class="tool-intro">
+            <p class="kicker">EXAM COUNTDOWN & TRACKER</p>
+            <h2>Never get caught <em>unprepared.</em></h2>
+            <p>Keep a unified view of your upcoming midterms, end-semesters, lab vivas, and assignment deadlines with real-time countdown clocks and syllabus progress bars.</p>
+            <div class="tip">
+              <span>✦</span>
+              <p><b>Prioritized automatically</b>Exams are sorted chronologically with automatic urgency badges (&lt; 48h turns urgent).</p>
+            </div>
+          </div>
+          <div class="tool-card-box">
+            <div class="tool-header">
+              <div>
+                <h3>Upcoming Exam Schedule</h3>
+                <p>Saved securely to your browser storage.</p>
+              </div>
+              <div class="save-pill"><span class="save-pill-dot"></span> Live Sync</div>
+            </div>
+
+            <!-- Add Exam Form -->
+            <form id="add-exam-form" class="exam-form" novalidate>
+              <label>Subject / Exam Name
+                <input id="exam-name" type="text" placeholder="e.g. Operating Systems" required />
+              </label>
+              <label>Exam Date & Time
+                <input id="exam-date" type="datetime-local" required />
+              </label>
+              <label>Prep Done (%)
+                <input id="exam-prep" type="number" min="0" max="100" value="40" placeholder="Prep %" />
+              </label>
+              <button class="button primary" style="padding:10px 14px; font-size:12px;" type="submit">+ Add Exam</button>
+            </form>
+
+            <!-- Exam Cards Grid -->
+            <div class="exam-grid" id="exam-grid"></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="ai-banner" id="ai">
+        <div>
+          <p class="kicker">COMING IN V2</p>
+          <h2>Your study companion is<br /><em>getting smarter.</em></h2>
+          <p>Ask questions, simplify topics, build study plans and practise better — with AI that understands student life.</p>
+          <a class="button light" href="mailto:hello@acadassistai.in?subject=AcadAssistAI%20early%20access">Join the early list <span>→</span></a>
+        </div>
+        <div class="ai-spark" aria-hidden="true">✦</div>
+      </section>
+
+      <section class="about" id="about">
+        <p class="kicker">WHY ACADASSIST.AI</p>
+        <h2>Less academic stress.<br /><em>More clarity.</em></h2>
+        <p>AcadAssist.ai brings the everyday calculations and planning tools students actually need into one clean, distraction-free space.</p>
+      </section>
     </main>
-    <footer><a class="brand" href="#home"><span class="brand-mark">A</span>AcadAssist<span>.ai</span></a><p>© 2026 AcadAssist.ai. Your Academic Assistant.</p><a href="#home">Back to top ↑</a></footer>
+
+    <footer>
+      <a class="brand" href="#home"><span class="brand-mark">A</span>AcadAssist<span>.ai</span></a>
+      <p>© 2026 AcadAssist.ai. Your Academic Assistant.</p>
+      <a href="#home">Back to top ↑</a>
+    </footer>
+
     <script src="script.js"></script>
   </body>
 </html>
-

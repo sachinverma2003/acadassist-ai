@@ -1,0 +1,587 @@
+/* tools.css - Styles for AcadAssist.ai Suite: CGPA/SGPA, Internal Marks, and Exam Countdown */
+
+/* Shared Tool Layouts */
+.tool-section {
+  max-width: 1184px;
+  margin: 0 auto;
+  padding: 85px 28px;
+  border-top: 1px solid var(--line);
+}
+
+.tool-section-grid {
+  display: grid;
+  grid-template-columns: 0.8fr 1.2fr;
+  gap: 65px;
+  align-items: start;
+}
+
+.tool-intro h2 {
+  font-size: 36px;
+  line-height: 1.2;
+  margin: 12px 0 16px;
+}
+
+.tool-intro p:not(.kicker) {
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.6;
+  max-width: 360px;
+}
+
+.tool-card-box {
+  background: #ffffff;
+  border: 1px solid var(--line);
+  box-shadow: 0 16px 36px rgba(32, 39, 88, 0.06);
+  border-radius: 14px;
+  padding: 28px;
+}
+
+.tool-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 16px;
+  margin-bottom: 22px;
+}
+
+.tool-header h3 {
+  font-size: 18px;
+  margin: 0;
+  color: var(--ink);
+}
+
+.tool-header p {
+  font-size: 12px;
+  color: var(--muted);
+  margin: 4px 0 0;
+}
+
+.save-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  font-weight: 600;
+  color: #36866c;
+  background: #edf9f4;
+  border: 1px solid #d2f2e5;
+  border-radius: 20px;
+  padding: 4px 10px;
+}
+
+.save-pill-dot {
+  width: 7px;
+  height: 7px;
+  background: #43b786;
+  border-radius: 50%;
+  box-shadow: 0 0 0 2px rgba(67, 183, 134, 0.2);
+}
+
+/* GPA / SGPA Course Rows */
+.gpa-course-row {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) 95px 125px 30px;
+  gap: 8px;
+  margin-bottom: 9px;
+  align-items: center;
+}
+
+.gpa-course-row input,
+.gpa-course-row select,
+.custom-select {
+  width: 100%;
+  min-width: 0;
+  border: 1px solid #dfe1e9;
+  border-radius: 6px;
+  padding: 9px 10px;
+  font: 12px 'DM Sans', sans-serif;
+  color: var(--ink);
+  background: #fff;
+  outline-color: var(--blue);
+}
+
+.gpa-course-row select:focus,
+.custom-select:focus {
+  border-color: var(--blue);
+}
+
+.gpa-actions-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px dashed var(--line);
+}
+
+.text-btn {
+  background: none;
+  border: none;
+  color: #8b92a5;
+  font-size: 11px;
+  cursor: pointer;
+  padding: 5px 8px;
+  border-radius: 4px;
+}
+
+.text-btn:hover {
+  color: #c64e4b;
+  background: #fff0ee;
+}
+
+/* GPA Result Display */
+.gpa-result-card {
+  margin-top: 22px;
+  padding: 20px;
+  background: linear-gradient(135deg, #f5f7ff 0%, #eefbf6 100%);
+  border: 1px solid #d7e0ff;
+  border-radius: 12px;
+}
+
+.gpa-score-summary {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.gpa-big-score {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 38px;
+  font-weight: 800;
+  color: var(--blue);
+  line-height: 1;
+}
+
+.gpa-big-score small {
+  font-size: 14px;
+  color: var(--muted);
+  font-weight: 600;
+}
+
+.gpa-badges {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.badge-pill {
+  padding: 6px 11px;
+  border-radius: 8px;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.badge-pill.credits {
+  background: #ffffff;
+  color: var(--ink);
+  border: 1px solid #dfe3f0;
+}
+
+.badge-pill.pct {
+  background: #dff6ea;
+  color: #1a7a53;
+  border: 1px solid #bcead4;
+}
+
+.gpa-formula-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid rgba(0, 0, 0, 0.06);
+  font-size: 11px;
+  color: var(--muted);
+}
+
+.formula-switch {
+  cursor: pointer;
+  color: var(--blue);
+  font-weight: 600;
+  text-decoration: underline;
+  background: none;
+  border: none;
+  font-size: 11px;
+  padding: 0;
+}
+
+/* Target CGPA Goal Planner */
+.target-planner-form .input-grid {
+  margin-bottom: 14px;
+}
+
+.planner-advice-box {
+  margin-top: 18px;
+  padding: 16px;
+  border-radius: 10px;
+  border: 1px solid transparent;
+}
+
+.planner-advice-box.feasible {
+  background: #eef9f4;
+  border-color: #c9eedf;
+  color: #1e704e;
+}
+
+.planner-advice-box.challenging {
+  background: #fff9ed;
+  border-color: #f7e4be;
+  color: #8f5c0c;
+}
+
+.planner-advice-box.impossible {
+  background: #fff1f0;
+  border-color: #ffd2cf;
+  color: #9d2e2b;
+}
+
+.planner-advice-box h4 {
+  font-size: 14px;
+  margin: 0 0 6px;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+}
+
+.planner-advice-box p {
+  font-size: 12px;
+  line-height: 1.5;
+  margin: 0;
+}
+
+/* Internal Marks Section */
+.weightage-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.weightage-card {
+  background: #f8f9fc;
+  border: 1px solid #e7eaee;
+  border-radius: 8px;
+  padding: 12px;
+}
+
+.weightage-card span {
+  display: block;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--ink);
+  margin-bottom: 4px;
+}
+
+.weightage-card small {
+  display: block;
+  font-size: 10px;
+  color: var(--muted);
+  margin-bottom: 8px;
+}
+
+.weightage-card input {
+  width: 100%;
+  border: 1px solid #dfe1e9;
+  border-radius: 5px;
+  padding: 7px 8px;
+  font-size: 12px;
+  outline-color: var(--blue);
+}
+
+.target-grade-selector {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  margin: 10px 0 16px;
+}
+
+.grade-choice {
+  border: 1px solid #dfe1e9;
+  background: #fff;
+  border-radius: 8px;
+  padding: 10px 6px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.grade-choice:hover {
+  border-color: var(--blue);
+}
+
+.grade-choice.active {
+  background: #5267ee;
+  border-color: #5267ee;
+  color: #fff;
+  font-weight: 700;
+  box-shadow: 0 4px 12px rgba(82, 103, 238, 0.25);
+}
+
+.grade-choice b {
+  display: block;
+  font-size: 14px;
+}
+
+.grade-choice span {
+  font-size: 10px;
+  opacity: 0.85;
+}
+
+.internal-result-card {
+  margin-top: 20px;
+  padding: 18px;
+  background: #f6f8fd;
+  border: 1px solid #dce2f3;
+  border-radius: 10px;
+}
+
+.internal-meter {
+  height: 8px;
+  background: #e4e7f2;
+  border-radius: 6px;
+  overflow: hidden;
+  margin: 10px 0;
+}
+
+.internal-meter-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #5267ee, #43b786);
+  border-radius: 6px;
+  transition: width 0.3s ease;
+}
+
+.internal-breakdown {
+  display: flex;
+  justify-content: space-between;
+  font-size: 11px;
+  color: var(--muted);
+}
+
+.internal-needed-stat {
+  font-size: 26px;
+  font-weight: 800;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  color: var(--ink);
+  margin: 8px 0;
+}
+
+.internal-needed-stat span {
+  font-size: 14px;
+  color: var(--muted);
+  font-weight: 500;
+}
+
+/* Exam Countdown */
+.exam-form {
+  display: grid;
+  grid-template-columns: 1.5fr 1.2fr 100px 110px;
+  gap: 10px;
+  align-items: flex-end;
+  background: #f9faff;
+  border: 1px dashed #d5ddf5;
+  border-radius: 10px;
+  padding: 16px;
+  margin-bottom: 24px;
+}
+
+.exam-form label {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.exam-form input {
+  border: 1px solid #dfe1e9;
+  border-radius: 6px;
+  padding: 8px 10px;
+  font: 12px 'DM Sans', sans-serif;
+}
+
+.exam-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+}
+
+.exam-card {
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 18px;
+  position: relative;
+  box-shadow: 0 6px 18px rgba(32, 39, 88, 0.04);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.exam-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 24px rgba(32, 39, 88, 0.08);
+}
+
+.exam-card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 12px;
+}
+
+.exam-card-subject {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--ink);
+  margin: 0;
+}
+
+.exam-card-date {
+  font-size: 11px;
+  color: var(--muted);
+  margin-top: 3px;
+}
+
+.countdown-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 5px 9px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.countdown-badge.urgent {
+  background: #fff0ee;
+  color: #c64e4b;
+  border: 1px solid #f9ccc8;
+}
+
+.countdown-badge.soon {
+  background: #fff8eb;
+  color: #a06716;
+  border: 1px solid #f6e2be;
+}
+
+.countdown-badge.normal {
+  background: #eef3ff;
+  color: #485bd4;
+  border: 1px solid #d4defc;
+}
+
+.countdown-badge.completed {
+  background: #eef9f4;
+  color: #277c57;
+  border: 1px solid #cfede0;
+}
+
+.countdown-units {
+  display: flex;
+  gap: 8px;
+  margin: 14px 0 12px;
+}
+
+.countdown-unit-box {
+  flex: 1;
+  text-align: center;
+  background: #f8f9fd;
+  border: 1px solid #eaedf6;
+  border-radius: 7px;
+  padding: 8px 4px;
+}
+
+.countdown-unit-box b {
+  display: block;
+  font-size: 18px;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  color: var(--ink);
+  line-height: 1.1;
+}
+
+.countdown-unit-box span {
+  font-size: 9px;
+  color: #8b92a5;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.prep-bar-container {
+  margin-top: 12px;
+}
+
+.prep-bar-header {
+  display: flex;
+  justify-content: space-between;
+  font-size: 10px;
+  color: var(--muted);
+  margin-bottom: 4px;
+}
+
+.prep-bar {
+  height: 5px;
+  background: #edf0f7;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.prep-bar-fill {
+  height: 100%;
+  background: #5267ee;
+  border-radius: 4px;
+  transition: width 0.2s ease;
+}
+
+.exam-card-delete {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  border: none;
+  background: transparent;
+  color: #b5bccb;
+  font-size: 18px;
+  cursor: pointer;
+  line-height: 1;
+  padding: 4px;
+  border-radius: 4px;
+}
+
+.exam-card-delete:hover {
+  color: #c64e4b;
+  background: #fff0ee;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 36px 16px;
+  color: var(--muted);
+  font-size: 13px;
+  background: #fbfbfe;
+  border: 1px dashed #dfe3f0;
+  border-radius: 10px;
+  grid-column: 1 / -1;
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 900px) {
+  .tool-section-grid {
+    grid-template-columns: 1fr;
+    gap: 30px;
+  }
+  .exam-form {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 600px) {
+  .gpa-course-row {
+    grid-template-columns: 1fr 75px 85px 25px;
+  }
+  .weightage-grid {
+    grid-template-columns: 1fr;
+  }
+  .target-grade-selector {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .exam-form {
+    grid-template-columns: 1fr;
+  }
+}
