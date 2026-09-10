@@ -1,6 +1,86 @@
 /* tools.css - Styles for AcadAssist.ai Suite: CGPA/SGPA, Internal Marks, and Exam Countdown */
 
 /* Shared Tool Layouts */
+.schedule-card {
+  width: 340px !important;
+  max-height: 310px;
+  overflow-y: auto;
+  z-index: 3;
+}
+
+.day-selector-mini {
+  border: 1px solid #dfe1e9;
+  border-radius: 4px;
+  font-size: 10px;
+  padding: 2px 4px;
+  background: #fff;
+  color: var(--ink);
+  cursor: pointer;
+}
+
+.class-row-actions {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+}
+
+.class-action-btn {
+  border: 1px solid transparent;
+  border-radius: 4px;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 3px 6px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  font-family: inherit;
+}
+
+.class-action-btn.present {
+  background: #e6f8ee;
+  color: #277c57;
+  border-color: #c9eedf;
+}
+
+.class-action-btn.present:hover {
+  background: #277c57;
+  color: #fff;
+}
+
+.class-action-btn.absent {
+  background: #fff0ee;
+  color: #c64e4b;
+  border-color: #ffd8d4;
+}
+
+.class-action-btn.absent:hover {
+  background: #c64e4b;
+  color: #fff;
+}
+
+.class-status-badge {
+  font-size: 9px;
+  font-weight: 700;
+  padding: 3px 7px;
+  border-radius: 4px;
+}
+
+.class-status-badge.present {
+  background: #e6f8ee;
+  color: #277c57;
+}
+
+.class-status-badge.absent {
+  background: #fff0ee;
+  color: #c64e4b;
+}
+
+.no-classes-today {
+  padding: 16px 0;
+  text-align: center;
+  color: #737a8d;
+  font-size: 11px;
+}
+
 .tool-section {
   max-width: 1184px;
   margin: 0 auto;

@@ -876,7 +876,194 @@ setInterval(updateCountdowns, 1000);
 
 
 /* ==========================================================================
-   7. Application Initialization
+   7. Today's Hub & Live Attendance Logger
+   ========================================================================== */
+const todayDateEl = document.querySelector('#today-date');
+const todayDaySelect = document.querySelector('#today-day-select');
+const todayClassesList = document.querySelector('#today-classes-list');
+const todayLogFeedback = document.querySelector('#today-log-feedback');
+
+function initTodaysHub() {
+  if (!todayDateEl || !todayDaySelect || !todayClassesList) return;
+
+  const now = new Date();
+  todayDateEl.textContent = now.toLocaleDateString(undefined, {
+    weekday: 'long',
+    day: 'numeric',
+    month: 'long'
+  });
+
+  const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+  const currentDayName = dayNames[now.getDay()];
+
+  todayDaySelect.innerHTML = days.map(d => `<option value="${d}" ${d === currentDayName ? 'selected' : ''}>${d}</option>`).join('');
+
+  todayDaySelect.addEventListener('change', () => {
+    renderTodaysClasses(todayDaySelect.value);
+  });
+
+  renderTodaysClasses(todayDaySelect.value || currentDayName);
+  updateHeroStats();
+}
+
+function getTodayKey() {
+  const d = new Date();
+  return `attend_log_${d.getFullYear()}_${d.getMonth() + 1}_${d.getDate()}`;
+}
+
+function getTodayLogs() {
+  try {
+    return JSON.parse(localStorage.getItem(getTodayKey()) || '{}');
+  } catch (e) {
+    return {};
+  }
+}
+
+function saveTodayLogs(logs) {
+  localStorage.setItem(getTodayKey(), JSON.stringify(logs));
+}
+
+function renderTodaysClasses(selectedDay) {
+  const timetable = [...document.querySelectorAll('.timetable-row')].map(row => ({
+    day: row.querySelector('.class-day').value,
+    subject: row.querySelector('.class-subject').value.trim()
+  }));
+
+  const dayClasses = timetable.filter(item => item.day === selectedDay);
+  const logs = getTodayLogs();
+
+  if (!dayClasses.length) {
+    todayClassesList.innerHTML = `<div class="no-classes-today">No classes scheduled for ${selectedDay}. Enjoy your day or add classes in the timetable!</div>`;
+    return;
+  }
+
+  const dotColors = ['blue', 'purple', 'orange', 'green'];
+  todayClassesList.innerHTML = dayClasses.map((cls, idx) => {
+    const logStatus = logs[`${selectedDay}_${cls.subject}_${idx}`];
+    const color = dotColors[idx % dotColors.length];
+
+    let actionMarkup = `
+      <div class="class-row-actions">
+        <button type="button" class="class-action-btn present" data-cls-idx="${idx}" data-cls-sub="${escapeHtml(cls.subject)}" data-cls-day="${selectedDay}">✓ Present</button>
+        <button type="button" class="class-action-btn absent" data-cls-idx="${idx}" data-cls-sub="${escapeHtml(cls.subject)}" data-cls-day="${selectedDay}">✗ Missed</button>
+      </div>
+    `;
+
+    if (logStatus === 'present') {
+      actionMarkup = `<span class="class-status-badge present">✓ Present</span>`;
+    } else if (logStatus === 'absent') {
+      actionMarkup = `<span class="class-status-badge absent">✗ Missed</span>`;
+    }
+
+    return `
+      <div class="class-row">
+        <span class="dot ${color}"></span>
+        <div>
+          <b>${escapeHtml(cls.subject)}</b>
+          <small>Slot ${idx + 1}</small>
+        </div>
+        ${actionMarkup}
+      </div>
+    `;
+  }).join('');
+}
+
+// Handle Attendance Click from Today's Hub
+if (todayClassesList) {
+  todayClassesList.addEventListener('click', event => {
+    const btn = event.target.closest('.class-action-btn');
+    if (!btn) return;
+
+    const subject = btn.dataset.clsSub;
+    const day = btn.dataset.clsDay;
+    const idx = btn.dataset.clsIdx;
+    const isPresent = btn.classList.contains('present');
+
+    // Find corresponding subject in detailed planner
+    const rows = [...document.querySelectorAll('.subject-row')];
+    const targetRow = rows.find(r => r.querySelector('.subject-name').value.trim().toLowerCase() === subject.toLowerCase());
+
+    if (targetRow) {
+      const heldInput = targetRow.querySelector('.classes-held');
+      const attendedInput = targetRow.querySelector('.classes-attended');
+
+      const currentHeld = parseInt(heldInput.value, 10) || 0;
+      const currentAttended = parseInt(attendedInput.value, 10) || 0;
+
+      heldInput.value = currentHeld + 1;
+      if (isPresent) {
+        attendedInput.value = currentAttended + 1;
+      }
+      saveDetailedAttendanceState();
+    }
+
+    // Save in daily log
+    const logs = getTodayLogs();
+    logs[`${day}_${subject}_${idx}`] = isPresent ? 'present' : 'absent';
+    saveTodayLogs(logs);
+
+    if (todayLogFeedback) {
+      todayLogFeedback.textContent = isPresent
+        ? `✓ Marked Present for ${subject} (+1 attended)`
+        : `✗ Marked Missed for ${subject} (+1 held)`;
+
+      setTimeout(() => {
+        todayLogFeedback.textContent = '';
+      }, 3500);
+    }
+
+    renderTodaysClasses(day);
+    updateHeroStats();
+  });
+}
+
+function updateHeroStats() {
+  const heldInputs = [...document.querySelectorAll('.classes-held')];
+  const attendedInputs = [...document.querySelectorAll('.classes-attended')];
+
+  let totalHeld = 0;
+  let totalAttended = 0;
+
+  heldInputs.forEach((h, i) => {
+    const heldVal = parseInt(h.value, 10) || 0;
+    const attVal = parseInt(attendedInputs[i]?.value, 10) || 0;
+    totalHeld += heldVal;
+    totalAttended += attVal;
+  });
+
+  const heroVal = document.querySelector('#hero-attendance-val');
+  const heroBar = document.querySelector('#hero-attendance-bar');
+  const heroSub = document.querySelector('#hero-attendance-sub');
+
+  if (heroVal && heroBar && heroSub) {
+    if (totalHeld > 0) {
+      const overallPct = (totalAttended / totalHeld) * 100;
+      heroVal.textContent = `${overallPct.toFixed(0)}%`;
+      heroBar.style.width = `${Math.min(100, Math.max(5, overallPct))}%`;
+      heroSub.textContent = overallPct >= 75 ? 'Safe on target' : 'Recovery needed';
+      heroSub.style.color = overallPct >= 75 ? '#43ad83' : '#c64e4b';
+    }
+  }
+
+  // Update nearest exam in hero
+  const heroExamCountdown = document.querySelector('#hero-exam-countdown');
+  const heroExamName = document.querySelector('#hero-exam-name');
+  if (heroExamCountdown && heroExamName && examList.length) {
+    const upcoming = [...examList].filter(e => new Date(e.date).getTime() > Date.now());
+    if (upcoming.length) {
+      upcoming.sort((a, b) => new Date(a.date) - new Date(b.date));
+      const nearest = upcoming[0];
+      const diffMs = new Date(nearest.date).getTime() - Date.now();
+      const daysLeft = Math.ceil(diffMs / (1000 * 60 * 60 * 24));
+      heroExamCountdown.textContent = `${daysLeft} day${daysLeft === 1 ? '' : 's'}`;
+      heroExamName.textContent = `until ${nearest.name}`;
+    }
+  }
+}
+
+
+/* ==========================================================================
+   8. Application Initialization
    ========================================================================== */
 document.addEventListener('DOMContentLoaded', () => {
   loadQuickAttendanceState();
@@ -884,6 +1071,7 @@ document.addEventListener('DOMContentLoaded', () => {
   loadGpaCourses();
   loadExams();
   calculateInternals();
+  initTodaysHub();
 });
 
 // Also trigger immediately in case DOM is already loaded
@@ -892,3 +1080,5 @@ loadDetailedAttendanceState();
 loadGpaCourses();
 loadExams();
 calculateInternals();
+initTodaysHub();
+

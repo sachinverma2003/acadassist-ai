@@ -45,17 +45,28 @@
             <span>Made to make student life easier.</span>
           </div>
         </div>
-        <div class="hero-art" aria-hidden="true">
+        <div class="hero-art">
           <div class="orb orb-one"></div><div class="orb orb-two"></div>
-          <div class="schedule-card">
-            <div class="schedule-top"><span>Today’s overview</span><b>•••</b></div>
-            <div class="schedule-date">Monday, 24 August</div>
-            <div class="class-row"><span class="dot blue"></span><div><b>Data Structures</b><small>09:00 — 10:00 AM</small></div><strong>Present</strong></div>
-            <div class="class-row"><span class="dot purple"></span><div><b>Mathematics III</b><small>11:15 — 12:15 PM</small></div><strong>Present</strong></div>
-            <div class="class-row faded"><span class="dot orange"></span><div><b>Computer Networks</b><small>02:00 — 03:00 PM</small></div><strong>Next</strong></div>
+          <div class="schedule-card" id="today-schedule-card">
+            <div class="schedule-top">
+              <span>Today’s schedule</span>
+              <select id="today-day-select" class="day-selector-mini" aria-label="Select day to preview"></select>
+            </div>
+            <div class="schedule-date" id="today-date">Loading date...</div>
+            <div id="today-classes-list"></div>
+            <div id="today-log-feedback" style="font-size:10px; color:#36866c; margin-top:8px; font-weight:600; min-height:14px;"></div>
           </div>
-          <div class="floating-score"><span>Attendance</span><b>84%</b><div><i></i></div><small>+4% this month</small></div>
-          <div class="floating-count"><span>✦</span><b>7 days</b><small>until your next exam</small></div>
+          <div class="floating-score" id="hero-floating-score">
+            <span>Overall Attendance</span>
+            <b id="hero-attendance-val">84%</b>
+            <div><i id="hero-attendance-bar" style="width:84%;"></i></div>
+            <small id="hero-attendance-sub">On target</small>
+          </div>
+          <div class="floating-count" id="hero-floating-exam">
+            <span>✦</span>
+            <b id="hero-exam-countdown">--</b>
+            <small id="hero-exam-name">Upcoming Exam</small>
+          </div>
         </div>
       </section>
 
