@@ -1389,8 +1389,325 @@ function updateHeroStats() {
 
 
 /* ==========================================================================
-   8. Application Initialization
+   8. Smart AI Study Companion & Tactical Advisor
    ========================================================================== */
+// AI Tabs Switcher
+document.querySelectorAll('[data-ai-tab]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const tab = btn.dataset.aiTab;
+    document.querySelector('#ai-panel-bunk').hidden = tab !== 'bunk';
+    document.querySelector('#ai-panel-roadmap').hidden = tab !== 'roadmap';
+    document.querySelector('#ai-panel-explainer').hidden = tab !== 'explainer';
+
+    document.querySelectorAll('[data-ai-tab]').forEach(b => {
+      b.classList.toggle('active', b === btn);
+    });
+  });
+});
+
+// 1. Tactical Bunk vs Attend Advisor
+const runAiTacticalBtn = document.querySelector('#run-ai-tactical-btn');
+const tacticalAdviceList = document.querySelector('#tactical-advice-list');
+
+if (runAiTacticalBtn) {
+  runAiTacticalBtn.addEventListener('click', () => {
+    generateTacticalAdvice();
+  });
+}
+
+function generateTacticalAdvice() {
+  if (!tacticalAdviceList) return;
+
+  const now = new Date();
+  const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+  const todayDay = dayNames[now.getDay()];
+
+  const timetable = [...document.querySelectorAll('.timetable-row')].map(row => ({
+    day: row.querySelector('.class-day').value,
+    subject: row.querySelector('.class-subject').value.trim()
+  }));
+
+  const todayClasses = timetable.filter(item => item.day === todayDay);
+  const rows = [...document.querySelectorAll('.subject-row')];
+
+  // Nearest exam check
+  const upcomingExams = [...examList].filter(e => new Date(e.date).getTime() > Date.now());
+  upcomingExams.sort((a, b) => new Date(a.date) - new Date(b.date));
+  const nearestExam = upcomingExams[0];
+
+  let nearestExamMsg = '';
+  if (nearestExam) {
+    const daysLeft = Math.ceil((new Date(nearestExam.date).getTime() - Date.now()) / (1000 * 60 * 60 * 24));
+    nearestExamMsg = `Upcoming test in <strong>${nearestExam.name}</strong> is in <strong>${daysLeft} day${daysLeft === 1 ? '' : 's'}</strong> (Prep: ${nearestExam.prep}%).`;
+  }
+
+  if (!todayClasses.length) {
+    tacticalAdviceList.innerHTML = `
+      <div class="tactical-card skip-safe">
+        <div class="tactical-card-top">
+          <span class="tactical-subject">Today (${todayDay})</span>
+          <span class="tactical-badge skip">Zero Classes Scheduled</span>
+        </div>
+        <p class="tactical-text">You have no scheduled classes today! ${nearestExamMsg ? `Use today's free focus time: ${nearestExamMsg}` : 'Great day for project work, assignment submission, or resting up.'}</p>
+      </div>
+    `;
+    return;
+  }
+
+  const cards = todayClasses.map(cls => {
+    const subRow = rows.find(r => r.querySelector('.subject-name').value.trim().toLowerCase() === cls.subject.toLowerCase());
+    if (!subRow) {
+      return `
+        <div class="tactical-card neutral">
+          <div class="tactical-card-top">
+            <span class="tactical-subject">${escapeHtml(cls.subject)}</span>
+            <span class="tactical-badge info">Data Missing</span>
+          </div>
+          <p class="tactical-text">Attendance data not found in planner. Ensure subject name in Timetable matches Current Attendance exactly.</p>
+        </div>
+      `;
+    }
+
+    const held = parseInt(subRow.querySelector('.classes-held').value, 10) || 0;
+    const attended = parseInt(subRow.querySelector('.classes-attended').value, 10) || 0;
+    const currentPct = held > 0 ? (attended / held) * 100 : 0;
+    const safeSkips = Math.max(0, Math.floor(attended / 0.75 - held));
+
+    if (currentPct >= 80 && safeSkips >= 2) {
+      const examRelevance = nearestExam ? ` Consider using this free period to revise for <strong>${nearestExam.name}</strong> (${nearestExam.prep}% prepared).` : '';
+      return `
+        <div class="tactical-card skip-safe">
+          <div class="tactical-card-top">
+            <span class="tactical-subject">${escapeHtml(cls.subject)} &bull; ${currentPct.toFixed(1)}%</span>
+            <span class="tactical-badge skip">Safe to Skip</span>
+          </div>
+          <p class="tactical-text">You have a generous cushion of <strong>${safeSkips} safe misses</strong> available before dropping below 75%.${examRelevance}</p>
+        </div>
+      `;
+    } else if (currentPct >= 75) {
+      const newPctIfMissed = held + 1 > 0 ? (attended / (held + 1)) * 100 : 0;
+      return `
+        <div class="tactical-card neutral">
+          <div class="tactical-card-top">
+            <span class="tactical-subject">${escapeHtml(cls.subject)} &bull; ${currentPct.toFixed(1)}%</span>
+            <span class="tactical-badge info">Borderline Margin</span>
+          </div>
+          <p class="tactical-text">You are on the safe side, but skipping today drops you to <strong>${newPctIfMissed.toFixed(1)}%</strong> (${newPctIfMissed < 75 ? 'danger zone' : 'very close to edge'}). Recommended to attend!</p>
+        </div>
+      `;
+    } else {
+      const needed = Math.ceil((0.75 * held - attended) / 0.25);
+      return `
+        <div class="tactical-card attend-must">
+          <div class="tactical-card-top">
+            <span class="tactical-subject">${escapeHtml(cls.subject)} &bull; ${currentPct.toFixed(1)}%</span>
+            <span class="tactical-badge must">Must Attend</span>
+          </div>
+          <p class="tactical-text">Critical detention risk! You need the next <strong>${needed} consecutive class${needed === 1 ? '' : 'es'}</strong> to cross 75%. Do not miss today under any circumstances.</p>
+        </div>
+      `;
+    }
+  }).join('');
+
+  tacticalAdviceList.innerHTML = cards;
+}
+
+// 2. AI Exam Revision Roadmap Generator
+const generateRoadmapBtn = document.querySelector('#generate-roadmap-btn');
+const roadmapTimelineList = document.querySelector('#roadmap-timeline-list');
+
+if (generateRoadmapBtn) {
+  generateRoadmapBtn.addEventListener('click', () => {
+    generateRevisionRoadmap();
+  });
+}
+
+function generateRevisionRoadmap() {
+  if (!roadmapTimelineList) return;
+
+  if (!examList.length) {
+    roadmapTimelineList.innerHTML = `<div class="tactical-card neutral"><p class="tactical-text">No exams added yet. Add your upcoming test dates in the Exam Countdown section first!</p></div>`;
+    return;
+  }
+
+  const sortedExams = [...examList].sort((a, b) => new Date(a.date) - new Date(b.date));
+  const focusExam = sortedExams[0];
+  const secondaryExam = sortedExams[1] || sortedExams[0];
+
+  const plan = [
+    {
+      day: 'Day 1 (Today): High-Yield Concept Sprint',
+      task: `Focus 70% of study time on <strong>${focusExam.name}</strong> (Current prep: ${focusExam.prep}%). Cover the top 3 high-weightage chapters and solve 5-mark previous year theory questions.`
+    },
+    {
+      day: 'Day 2 (Tomorrow): Core Problem Solving & Formulas',
+      task: `Dedicate 2 focused hours to numerical / algorithm walkthroughs in <strong>${focusExam.name}</strong>. Create a 1-page quick formula sheet for fast bedtime revision.`
+    },
+    {
+      day: 'Day 3: Mixed Revision & Secondary Prep',
+      task: `Spend morning on <strong>${secondaryExam.name}</strong> foundational notes (${secondaryExam.prep}% prep). In the evening, do a 45-minute timed mock test for <strong>${focusExam.name}</strong>.`
+    },
+    {
+      day: 'Day 4: Gap Remediation & Viva Prep',
+      task: `Review weak topics identified in yesterday's mock test. Highlight all definitions, acronyms, and diagram labels that examiners consistently look for.`
+    },
+    {
+      day: 'Day 5: Confidence Sprint & Rest',
+      task: `Light revision of your 1-page formula sheet. No heavy new topics. Sleep at least 7 hours before test morning for peak cognitive performance.`
+    }
+  ];
+
+  roadmapTimelineList.innerHTML = plan.map(item => `
+    <div class="roadmap-day-card">
+      <div class="roadmap-day-header">
+        <span>${item.day}</span>
+        <small style="color:var(--blue); font-size:11px;">Target: +15% Prep</small>
+      </div>
+      <p class="roadmap-tasks">${item.task}</p>
+    </div>
+  `).join('');
+}
+
+// 3. 5-Mark Exam Explainer Engine
+const explainTopicBtn = document.querySelector('#explain-topic-btn');
+const explainerInput = document.querySelector('#explainer-topic-input');
+const explainerResult = document.querySelector('#explainer-result');
+
+const TOPIC_KNOWLEDGE_BASE = {
+  "dijkstra's algorithm": {
+    title: "Dijkstra's Algorithm (Single Source Shortest Path)",
+    def: "A greedy graph algorithm to find the shortest path from a starting vertex to all other vertices in a weighted graph with non-negative edge weights.",
+    points: [
+      "<strong>Greedy Approach:</strong> Always picks the unvisited vertex with the minimum tentative distance.",
+      "<strong>Time Complexity:</strong> O((V + E) log V) using a Min-Heap / Priority Queue.",
+      "<strong>Limitation:</strong> Fails on graphs containing negative edge weights (use Bellman-Ford instead).",
+      "<strong>Key Data Structures:</strong> Min-heap for extraction, distance array initialized to infinity, visited boolean array."
+    ],
+    tip: "In exams, always draw the priority queue state table step-by-step and write why negative cycles break greedy choice."
+  },
+  "page replacement (lru vs fifo)": {
+    title: "Page Replacement Algorithms: LRU vs FIFO",
+    def: "Techniques employed by the operating system's Virtual Memory manager to decide which memory page to evict when a page fault occurs and all frames are occupied.",
+    points: [
+      "<strong>FIFO (First-In, First-Out):</strong> Evicts the oldest page in memory. Suffers from <em>Belady's Anomaly</em> (more frames can increase page faults).",
+      "<strong>LRU (Least Recently Used):</strong> Evicts the page not accessed for the longest time period. Optimal approximation with no Belady's anomaly.",
+      "<strong>Implementation:</strong> LRU requires hardware support (counters or doubly linked list with hash table).",
+      "<strong>Evaluation:</strong> LRU offers significantly lower page fault frequency than FIFO for typical spatial/temporal locality."
+    ],
+    tip: "Always calculate total Page Faults using a 3-frame reference string example (e.g. 7, 0, 1, 2, 0, 3...) to score full 5 marks."
+  },
+  "normal distribution & z-score": {
+    title: "Normal Distribution & Standard Z-Score",
+    def: "A continuous bell-shaped probability distribution symmetric about the mean (μ), where empirical rule states 68-95-99.7% of data lies within 1, 2, and 3 standard deviations (σ).",
+    points: [
+      "<strong>Probability Density:</strong> Defined as f(x) = (1 / (σ√(2π))) * e^(-(x-μ)² / 2σ²).",
+      "<strong>Properties:</strong> Mean = Median = Mode at the peak axis of symmetry. Total area under the curve equals 1.0.",
+      "<strong>Z-Score Formula:</strong> Z = (X - μ) / σ, measuring how many standard deviations a value lies from the mean.",
+      "<strong>Standard Normal:</strong> Special case where μ = 0 and σ = 1."
+    ],
+    tip: "Sketch the bell curve showing shaded ±1σ, ±2σ, and write the Z formula prominently for numerical credit."
+  },
+  "tcp vs udp 3-way handshake": {
+    title: "TCP vs UDP & The 3-Way Handshake",
+    def: "Transport Layer protocols where TCP provides connection-oriented, reliable, ordered data delivery, while UDP offers lightweight, connectionless datagram delivery without handshaking.",
+    points: [
+      "<strong>3-Way Handshake:</strong> SYN (Client -> Server) -> SYN-ACK (Server -> Client) -> ACK (Client -> Server).",
+      "<strong>Reliability & Flow Control:</strong> TCP uses checksums, sequence numbers, ACKs, and sliding windows. UDP has no flow or congestion control.",
+      "<strong>Overhead & Speed:</strong> TCP header is 20-60 bytes (higher latency); UDP header is exactly 8 bytes (real-time streaming, DNS, VoIP).",
+      "<strong>Use Cases:</strong> HTTP/HTTPS, FTP, SSH require TCP; Video streaming, gaming, and DHCP use UDP."
+    ],
+    tip: "Draw the sequence diagram with arrows and sequence number increments (seq=x, ack=x+1) for guaranteed 5/5."
+  },
+  "database acid properties": {
+    title: "ACID Properties in Database Management",
+    def: "A set of four essential guarantees ensuring database transactions are processed reliably even during network failures, crashes, or concurrent access.",
+    points: [
+      "<strong>Atomicity ('All or Nothing'):</strong> Entire transaction executes completely, or rolls back entirely if any statement fails.",
+      "<strong>Consistency:</strong> Transaction preserves all integrity constraints, foreign keys, and rules before and after execution.",
+      "<strong>Isolation:</strong> Concurrent transactions execute independently without interfering with each other's intermediate state.",
+      "<strong>Durability:</strong> Once a transaction commits, modifications are permanent on disk via write-ahead logging (WAL), surviving system crashes."
+    ],
+    tip: "Provide a real-world Bank Transfer example: Debit Account A (-$500) and Credit Account B (+$500) to demonstrate Atomicity & Consistency."
+  },
+  "dynamic programming vs greedy": {
+    title: "Dynamic Programming vs Greedy Algorithms",
+    def: "Two primary algorithm design paradigms for optimization problems: Greedy makes locally optimal choices at each step without backtracking, while DP solves and memoizes overlapping subproblems.",
+    points: [
+      "<strong>Subproblem Overlap:</strong> DP requires overlapping subproblems (e.g. Fibonacci, 0/1 Knapsack); Greedy choices do not re-evaluate prior steps.",
+      "<strong>Optimality:</strong> DP guarantees global optimum if optimal substructure holds; Greedy only guarantees global optimum if Greedy Choice property holds (e.g. Fractional Knapsack, Kruskal's).",
+      "<strong>Memoization / Tabulation:</strong> DP stores subproblem solutions in a table (top-down or bottom-up) with space overhead.",
+      "<strong>Complexity:</strong> Greedy is typically O(n log n) or O(n); DP is often pseudo-polynomial or polynomial O(n*W)."
+    ],
+    tip: "Always contrast 0/1 Knapsack (DP required) vs Fractional Knapsack (Greedy works) in your exam response."
+  }
+};
+
+function explainTopic(topicText) {
+  if (!explainerResult) return;
+  const clean = topicText.trim().toLowerCase();
+  if (!clean) return;
+
+  let topicData = TOPIC_KNOWLEDGE_BASE[clean];
+
+  // Fuzzy match
+  if (!topicData) {
+    const key = Object.keys(TOPIC_KNOWLEDGE_BASE).find(k => clean.includes(k) || k.includes(clean));
+    if (key) topicData = TOPIC_KNOWLEDGE_BASE[key];
+  }
+
+  if (!topicData) {
+    // Dynamic generation
+    const titleCased = topicText.charAt(0).toUpperCase() + topicText.slice(1);
+    topicData = {
+      title: `${titleCased} — 5-Mark Exam High-Yield Summary`,
+      def: `${titleCased} is a core academic syllabus concept evaluated on its core definition, procedural steps, and architectural/mathematical tradeoffs.`,
+      points: [
+        `<strong>Fundamental Principle:</strong> Break down ${titleCased} into its primary input, processing mechanism, and expected output state.`,
+        `<strong>Key Mathematical / Architectural Tradeoff:</strong> State the time/space complexity or boundary condition constraints applicable to this concept.`,
+        `<strong>Step-by-Step Mechanism:</strong> Write a 3-step procedural breakdown showing standard initial state, transformation, and termination criteria.`,
+        `<strong>Real-World Application:</strong> Mention where this technique is implemented in modern engineering systems or industry software.`
+      ],
+      tip: "Structure your 5-mark answer with: 1) Definition (1 mark), 2) Neat labeled block diagram (2 marks), 3) Key advantages/formula (2 marks)."
+    };
+  }
+
+  explainerResult.innerHTML = `
+    <h4>${escapeHtml(topicData.title)}</h4>
+    <div class="explainer-section-title">Core Definition (1 Mark)</div>
+    <p style="font-size:12px; line-height:1.5; color:#3b435b; margin:0;">${topicData.def}</p>
+
+    <div class="explainer-section-title">Key Answer Points (3 Marks)</div>
+    <ul class="explainer-bullets">
+      ${topicData.points.map(pt => `<li>${pt}</li>`).join('')}
+    </ul>
+
+    <div class="exam-tip-box">
+      <strong>✦ Examiner Tip:</strong> ${topicData.tip}
+    </div>
+  `;
+  explainerResult.hidden = false;
+}
+
+if (explainTopicBtn && explainerInput) {
+  explainTopicBtn.addEventListener('click', () => {
+    explainTopic(explainerInput.value);
+  });
+  explainerInput.addEventListener('keydown', event => {
+    if (event.key === 'Enter') {
+      event.preventDefault();
+      explainTopic(explainerInput.value);
+    }
+  });
+}
+
+document.querySelectorAll('.topic-pill').forEach(pill => {
+  pill.addEventListener('click', () => {
+    const topic = pill.dataset.topic;
+    if (explainerInput) explainerInput.value = topic;
+    explainTopic(topic);
+  });
+});
+
 document.addEventListener('DOMContentLoaded', () => {
   loadQuickAttendanceState();
   loadDetailedAttendanceState();

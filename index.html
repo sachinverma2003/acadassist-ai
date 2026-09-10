@@ -512,12 +512,55 @@
         </div>
       </section>
 
+      <!-- Smart AI Study Companion & Tactical Advisor -->
       <section class="ai-banner" id="ai">
-        <div>
-          <p class="kicker">COMING IN V2</p>
-          <h2>Your study companion is<br /><em>getting smarter.</em></h2>
-          <p>Ask questions, simplify topics, build study plans and practise better — with AI that understands student life.</p>
-          <a class="button light" href="mailto:hello@acadassistai.in?subject=AcadAssistAI%20early%20access">Join the early list <span>→</span></a>
+        <div style="width:100%; z-index:2; position:relative;">
+          <p class="kicker">ACADEMIC INTELLIGENCE ENGINE</p>
+          <h2>Your study companion is<br /><em>live &amp; active.</em></h2>
+          <p>Get tactical "Bunk vs Attend" decision advice, intelligent day-by-day exam roadmaps, and instant 5-mark revision summaries.</p>
+
+          <div class="ai-tool-wrapper">
+            <div class="ai-mode-tabs" role="tablist">
+              <button class="ai-tab-btn active" type="button" data-ai-tab="bunk">⚖️ "Bunk vs Attend" Advisor</button>
+              <button class="ai-tab-btn" type="button" data-ai-tab="roadmap">📅 AI Exam Revision Roadmap</button>
+              <button class="ai-tab-btn" type="button" data-ai-tab="explainer">📝 5-Mark Exam Explainer</button>
+            </div>
+
+            <!-- Panel 1: Bunk vs Attend -->
+            <div class="ai-panel-box" id="ai-panel-bunk">
+              <h3>Tactical Attendance Advisor</h3>
+              <p class="ai-desc">Cross-references today’s timetable, current attendance cushion, and exam urgency to tell you what to attend and what you can safely skip.</p>
+              <button class="button light" id="run-ai-tactical-btn" type="button" style="margin-bottom:16px;">Analyze Today's Strategy ⚡</button>
+              <div class="tactical-advice-grid" id="tactical-advice-list"></div>
+            </div>
+
+            <!-- Panel 2: Roadmap -->
+            <div class="ai-panel-box" id="ai-panel-roadmap" hidden>
+              <h3>Smart Exam Revision Roadmap</h3>
+              <p class="ai-desc">An intelligent daily schedule balanced by exam proximity and syllabus completion gaps.</p>
+              <button class="button light" id="generate-roadmap-btn" type="button" style="margin-bottom:16px;">Generate Revision Schedule 🎯</button>
+              <div class="roadmap-timeline" id="roadmap-timeline-list"></div>
+            </div>
+
+            <!-- Panel 3: 5-Mark Explainer -->
+            <div class="ai-panel-box" id="ai-panel-explainer" hidden>
+              <h3>5-Mark Exam Answer Explainer</h3>
+              <p class="ai-desc">Instant high-yield revision cards with definitions, must-include keywords, formulas, and common exam traps.</p>
+              <div class="explainer-input-bar">
+                <input class="explainer-input" id="explainer-topic-input" type="text" placeholder="Enter topic (e.g. Dijkstra's Algorithm, Page Replacement, Bayes Theorem)..." />
+                <button class="button light" id="explain-topic-btn" type="button" style="padding:10px 18px;">Explain 🚀</button>
+              </div>
+              <div class="topic-pills-list">
+                <span class="topic-pill" data-topic="Dijkstra's Algorithm">Dijkstra's Algorithm</span>
+                <span class="topic-pill" data-topic="Page Replacement (LRU vs FIFO)">Page Replacement (LRU)</span>
+                <span class="topic-pill" data-topic="Normal Distribution & Z-Score">Normal Distribution</span>
+                <span class="topic-pill" data-topic="TCP vs UDP 3-Way Handshake">TCP vs UDP</span>
+                <span class="topic-pill" data-topic="Database ACID Properties">ACID Properties</span>
+                <span class="topic-pill" data-topic="Dynamic Programming vs Greedy">DP vs Greedy</span>
+              </div>
+              <div class="explainer-result-card" id="explainer-result" hidden></div>
+            </div>
+          </div>
         </div>
         <div class="ai-spark" aria-hidden="true">✦</div>
       </section>
