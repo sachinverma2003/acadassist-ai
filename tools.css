@@ -216,7 +216,106 @@
   margin-top: 12px;
 }
 
-/* Shared Tool Layouts */
+/* Print / PDF Export Styles */
+@media print {
+  body {
+    background: #ffffff !important;
+    color: #000000 !important;
+    font-size: 10pt;
+  }
+
+  .site-header,
+  .hero-actions,
+  .hero-art,
+  .menu-toggle,
+  .button,
+  .small-button,
+  .text-btn,
+  .mode-tabs,
+  .ai-mode-tabs,
+  #quick-panel,
+  .exam-form,
+  .remove-row,
+  .exam-card-delete,
+  .preset-selector-container,
+  .gpa-actions-bar,
+  footer,
+  .ai-banner,
+  .orb,
+  .trust,
+  #add-subject,
+  #add-timetable,
+  #add-course-btn,
+  #add-holiday,
+  .holiday-picker,
+  .target-label input,
+  .target-grade-selector,
+  .explainer-input-bar,
+  .topic-pills-list {
+    display: none !important;
+  }
+
+  .hero {
+    min-height: auto !important;
+    padding: 15px 0 !important;
+  }
+
+  .tool-section,
+  .calculator-section {
+    padding: 15px 0 !important;
+    page-break-inside: avoid;
+  }
+
+  .calculator-card,
+  .tool-card-box {
+    box-shadow: none !important;
+    border: 1px solid #ccc !important;
+    page-break-inside: avoid;
+  }
+
+  .print-header-banner {
+    display: block !important;
+    border-bottom: 2px solid #202758;
+    padding-bottom: 10px;
+    margin-bottom: 16px;
+  }
+
+  .print-header-banner h1 {
+    font-size: 20pt;
+    margin: 0;
+    color: #202758;
+  }
+
+  .print-header-banner p {
+    font-size: 9pt;
+    color: #555;
+    margin: 3px 0 0;
+  }
+}
+
+.print-header-banner {
+  display: none;
+}
+
+.calendar-sync-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: #edf0ff;
+  border: 1px solid #d4dcff;
+  color: #485bd4;
+  font: 700 11px 'DM Sans', sans-serif;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.calendar-sync-btn:hover {
+  background: #485bd4;
+  color: #ffffff;
+}
+
 .schedule-card {
   width: 340px !important;
   max-height: 310px;

@@ -1700,13 +1700,89 @@ if (explainTopicBtn && explainerInput) {
   });
 }
 
-document.querySelectorAll('.topic-pill').forEach(pill => {
-  pill.addEventListener('click', () => {
-    const topic = pill.dataset.topic;
-    if (explainerInput) explainerInput.value = topic;
-    explainTopic(topic);
+/* ==========================================================================
+   9. Calendar Sync (.ics) & Printable Academic Report
+   ========================================================================== */
+function formatIcsDate(dateObj) {
+  return dateObj.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
+}
+
+function exportExamsToIcs() {
+  if (!examList.length) {
+    alert('Please add at least one exam in the Exam Countdown section first.');
+    return;
+  }
+
+  const nowIcs = formatIcsDate(new Date());
+
+  const events = examList.map(exam => {
+    const startDate = new Date(exam.date);
+    const endDate = new Date(startDate.getTime() + 3 * 3600 * 1000); // 3 hour duration
+
+    return [
+      'BEGIN:VEVENT',
+      `UID:${exam.id || Date.now()}@acadassist.ai`,
+      `DTSTAMP:${nowIcs}`,
+      `DTSTART:${formatIcsDate(startDate)}`,
+      `DTEND:${formatIcsDate(endDate)}`,
+      `SUMMARY:Exam: ${exam.name}`,
+      `DESCRIPTION:Academic Exam for ${exam.name}. Current syllabus preparation: ${exam.prep}%. Generated via AcadAssist.ai.`,
+      'STATUS:CONFIRMED',
+      'BEGIN:VALARM',
+      'TRIGGER:-P1D',
+      'ACTION:DISPLAY',
+      `DESCRIPTION:Reminder: ${exam.name} exam tomorrow!`,
+      'END:VALARM',
+      'BEGIN:VALARM',
+      'TRIGGER:-PT2H',
+      'ACTION:DISPLAY',
+      `DESCRIPTION:Reminder: ${exam.name} exam in 2 hours!`,
+      'END:VALARM',
+      'END:VEVENT'
+    ].join('\r\n');
+  }).join('\r\n');
+
+  const icsContent = [
+    'BEGIN:VCALENDAR',
+    'VERSION:2.0',
+    'PRODID:-//AcadAssist.ai//Academic Assistant Suite//EN',
+    'CALSCALE:GREGORIAN',
+    'METHOD:PUBLISH',
+    events,
+    'END:VCALENDAR'
+  ].join('\r\n');
+
+  const blob = new Blob([icsContent], { type: 'text/calendar;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.href = url;
+  link.setAttribute('download', 'AcadAssist_Exam_Schedule.ics');
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  URL.revokeObjectURL(url);
+}
+
+const exportIcsBtn = document.querySelector('#export-ics-btn');
+if (exportIcsBtn) {
+  exportIcsBtn.addEventListener('click', exportExamsToIcs);
+}
+
+const printReportBtn = document.querySelector('#print-report-btn');
+const printDateEl = document.querySelector('#print-date');
+if (printReportBtn) {
+  printReportBtn.addEventListener('click', () => {
+    if (printDateEl) {
+      printDateEl.textContent = new Date().toLocaleDateString(undefined, {
+        weekday: 'long',
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+      });
+    }
+    window.print();
   });
-});
+}
 
 document.addEventListener('DOMContentLoaded', () => {
   loadQuickAttendanceState();

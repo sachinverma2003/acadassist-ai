@@ -31,6 +31,11 @@
     </header>
 
     <main>
+      <div class="print-header-banner">
+        <h1>AcadAssist.ai — Official Academic Summary Report</h1>
+        <p>Generated on <span id="print-date"></span> &bull; Verified Academic Planning Copy</p>
+      </div>
+
       <section class="hero" id="home">
         <div class="hero-copy">
           <div class="eyebrow"><span></span> Built for students, by students</div>
@@ -39,6 +44,7 @@
           <div class="hero-actions">
             <a class="button primary" href="#attendance">Start with attendance <span>→</span></a>
             <a class="button text" href="#tools">Explore all tools <span>↓</span></a>
+            <button class="button text" id="print-report-btn" type="button" style="border:1px solid var(--line); background:#fff; cursor:pointer;">Export Report 📄</button>
           </div>
           <div class="trust">
             <div class="avatars"><i>R</i><i>S</i><i>A</i></div>
@@ -489,7 +495,10 @@
                 <h3>Upcoming Exam Schedule</h3>
                 <p>Saved securely to your browser storage.</p>
               </div>
-              <div class="save-pill"><span class="save-pill-dot"></span> Live Sync</div>
+              <div style="display:flex; gap:8px; align-items:center;">
+                <button class="calendar-sync-btn" id="export-ics-btn" type="button" title="Download .ics for Google/Apple Calendar">📅 Sync Calendar</button>
+                <div class="save-pill"><span class="save-pill-dot"></span> Live Sync</div>
+              </div>
             </div>
 
             <!-- Add Exam Form -->
