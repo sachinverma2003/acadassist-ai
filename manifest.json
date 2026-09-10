@@ -1,0 +1,24 @@
+{
+  "name": "AcadAssist.ai — Your Academic Assistant",
+  "short_name": "AcadAssist",
+  "description": "Complete academic companion: Attendance Planner, CGPA/SGPA Calculator, Internal Marks Predictor, and Exam Countdown.",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#0d1117",
+  "theme_color": "#5267ee",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'><rect width='192' height='192' rx='40' fill='%235267ee'/><text x='50%25' y='68%25' font-family='sans-serif' font-weight='900' font-size='110' fill='white' text-anchor='middle'>A</text></svg>",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><rect width='512' height='512' rx='100' fill='%235267ee'/><text x='50%25' y='68%25' font-family='sans-serif' font-weight='900' font-size='290' fill='white' text-anchor='middle'>A</text></svg>",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

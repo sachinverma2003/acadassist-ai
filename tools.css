@@ -1,5 +1,173 @@
 /* tools.css - Styles for AcadAssist.ai Suite: CGPA/SGPA, Internal Marks, and Exam Countdown */
 
+/* Midnight Dark Mode */
+.theme-toggle-btn {
+  background: transparent;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  width: 36px;
+  height: 36px;
+  display: inline-grid;
+  place-items: center;
+  font-size: 16px;
+  cursor: pointer;
+  color: var(--ink);
+  transition: all 0.2s ease;
+  margin-left: 8px;
+}
+
+.theme-toggle-btn:hover {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+body.dark-mode {
+  --ink: #e6edf3;
+  --cream: #0d1117;
+  --muted: #8b949e;
+  --navy: #161b22;
+  --line: #30363d;
+  --mint: #162c22;
+  background: #0d1117;
+  color: #e6edf3;
+}
+
+body.dark-mode .site-header {
+  background: #0d1117;
+}
+
+body.dark-mode .tools-section,
+body.dark-mode .tool-card-box,
+body.dark-mode .calculator-card,
+body.dark-mode .tool-card,
+body.dark-mode .schedule-card,
+body.dark-mode .floating-score,
+body.dark-mode .floating-count {
+  background: #161b22 !important;
+  border-color: #30363d !important;
+  color: #e6edf3 !important;
+}
+
+body.dark-mode .tool-card.featured {
+  background: #1c2333 !important;
+  border-color: #384260 !important;
+}
+
+body.dark-mode input,
+body.dark-mode select,
+body.dark-mode .custom-select,
+body.dark-mode .gpa-course-row input,
+body.dark-mode .gpa-course-row select,
+body.dark-mode .weightage-card input,
+body.dark-mode .exam-form input,
+body.dark-mode .sem-inputs input,
+body.dark-mode .explainer-input {
+  background: #21262d !important;
+  border-color: #30363d !important;
+  color: #e6edf3 !important;
+}
+
+body.dark-mode .hero-art {
+  background: linear-gradient(145deg, #161c33, #132729) !important;
+}
+
+body.dark-mode .orb-one { background: #26336e !important; }
+body.dark-mode .orb-two { background: #163d34 !important; }
+
+body.dark-mode .weightage-card,
+body.dark-mode .sem-card,
+body.dark-mode .radar-stat-tile,
+body.dark-mode .countdown-unit-box,
+body.dark-mode .exam-card,
+body.dark-mode .preset-selector-container {
+  background: #1c222c !important;
+  border-color: #30363d !important;
+}
+
+body.dark-mode .subject-result {
+  background: #1c222c !important;
+  border-color: #30363d !important;
+}
+
+body.dark-mode .gpa-result-card,
+body.dark-mode .transcript-summary-box {
+  background: linear-gradient(135deg, #161d30 0%, #132a24 100%) !important;
+  border-color: #2b395e !important;
+}
+
+body.dark-mode .internal-result-card {
+  background: #1a2233 !important;
+  border-color: #2e3852 !important;
+}
+
+body.dark-mode .mode-tabs {
+  background: #21262d !important;
+}
+
+body.dark-mode .mode-tab.active {
+  background: #161b22 !important;
+  color: #ffffff !important;
+}
+
+body.dark-mode .grade-choice {
+  background: #21262d !important;
+  border-color: #30363d !important;
+  color: #e6edf3 !important;
+}
+
+body.dark-mode .grade-choice.active {
+  background: #5267ee !important;
+  color: #ffffff !important;
+}
+
+body.dark-mode .theme-toggle-btn {
+  border-color: #30363d;
+  color: #f0f6fc;
+}
+
+body.dark-mode .theme-toggle-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+body.dark-mode .tip {
+  background: #261f18 !important;
+  border: 1px solid #4a3424;
+}
+
+body.dark-mode .national-note {
+  background: #142820 !important;
+  color: #4edbb1 !important;
+}
+
+body.dark-mode .calendar-sync-btn {
+  background: #1f274a !important;
+  border-color: #344075 !important;
+  color: #9cb1ff !important;
+}
+
+body.dark-mode .tactical-card,
+body.dark-mode .roadmap-day-card,
+body.dark-mode .explainer-result-card {
+  background: #1c222c !important;
+  color: #e6edf3 !important;
+}
+
+body.dark-mode .tactical-subject,
+body.dark-mode .explainer-result-card h4 {
+  color: #ffffff !important;
+}
+
+body.dark-mode .tactical-text,
+body.dark-mode .roadmap-tasks,
+body.dark-mode .explainer-bullets {
+  color: #adbac7 !important;
+}
+
+body.dark-mode .exam-tip-box {
+  background: #1a2138 !important;
+  color: #c9d5ff !important;
+}
+
+
 /* Smart AI Study Companion & Tactical Advisor Suite */
 .ai-tool-wrapper {
   margin-top: 36px;
