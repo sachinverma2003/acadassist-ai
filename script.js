@@ -1789,6 +1789,16 @@ if (printReportBtn) {
    ========================================================================== */
 const themeToggleBtn = document.querySelector('#theme-toggle-btn');
 
+function applyTheme(isDark) {
+  document.documentElement.classList.toggle('dark-mode', isDark);
+  document.body.classList.toggle('dark-mode', isDark);
+  if (themeToggleBtn) {
+    themeToggleBtn.textContent = isDark ? '☀️' : '🌙';
+    themeToggleBtn.setAttribute('title', isDark ? 'Switch to light mode' : 'Switch to dark mode');
+  }
+  localStorage.setItem('acadassist_theme', isDark ? 'dark' : 'light');
+}
+
 function initTheme() {
   const savedTheme = localStorage.getItem('acadassist_theme');
   const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
@@ -1796,21 +1806,14 @@ function initTheme() {
 
   applyTheme(isDark);
 
-  if (themeToggleBtn) {
-    themeToggleBtn.addEventListener('click', () => {
+  if (themeToggleBtn && !themeToggleBtn.dataset.bound) {
+    themeToggleBtn.dataset.bound = 'true';
+    themeToggleBtn.addEventListener('click', event => {
+      event.preventDefault();
       const currentlyDark = document.body.classList.contains('dark-mode');
       applyTheme(!currentlyDark);
     });
   }
-}
-
-function applyTheme(isDark) {
-  document.body.classList.toggle('dark-mode', isDark);
-  if (themeToggleBtn) {
-    themeToggleBtn.textContent = isDark ? '☀️' : '🌙';
-    themeToggleBtn.setAttribute('title', isDark ? 'Switch to light mode' : 'Switch to dark mode');
-  }
-  localStorage.setItem('acadassist_theme', isDark ? 'dark' : 'light');
 }
 
 // Service Worker Registration for Offline PWA
@@ -1822,7 +1825,11 @@ if ('serviceWorker' in navigator) {
   });
 }
 
-document.addEventListener('DOMContentLoaded', () => {
+let appInitialized = false;
+function initApp() {
+  if (appInitialized) return;
+  appInitialized = true;
+
   initTheme();
   loadQuickAttendanceState();
   loadDetailedAttendanceState();
@@ -1832,18 +1839,14 @@ document.addEventListener('DOMContentLoaded', () => {
   loadExams();
   calculateInternals();
   initTodaysHub();
-});
+}
 
-// Also trigger immediately in case DOM is already loaded
-initTheme();
-loadQuickAttendanceState();
-loadDetailedAttendanceState();
-loadGpaCourses();
-loadTranscriptData();
-renderTranscript();
-loadExams();
-calculateInternals();
-initTodaysHub();
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initApp);
+} else {
+  initApp();
+}
+
 
 
 
